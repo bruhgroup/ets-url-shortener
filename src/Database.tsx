@@ -1,11 +1,13 @@
 import {auth, database} from "./App";
-import {child, get, ref, update, onValue} from "firebase/database";
+import {child, get, ref, update,remove} from "firebase/database";
+import {data} from "autoprefixer";
 
 export function write(userid: string | undefined, url: string, surl: string) {
     if (!userid) return;
     const updates: { [index: string]: string | boolean } = {};
     updates[`/links/${surl}`] = url;
     updates[`/users/${userid}/links/${surl}`] = true;
+
     return update(ref(database), updates);
 }
 
@@ -23,12 +25,18 @@ export async function read(key: string) {
 export async function resolveUserLinks(userid: string | undefined): Promise<{ [index: string]: string }> {
     let data: { [index: string]: string } = {};
     if (!userid) return data;
+
     await get(child(ref(database), `/users/${userid}/links`))
         .then(async (snapshot) => {
-        const keys = Object.keys(snapshot.exportVal())
+        const keys = snapshot.exportVal() == null ? Object.keys(0) : Object.keys(snapshot.exportVal())
         await Promise.all(keys.map(async k => {
             data[k] = await read(k);
         }))
     });
     return data;
+}
+
+export async function removeData(userid: string | undefined, surl: string) {
+    await remove(ref(database, `/users/${userid}/links/${surl}`));
+    await remove(ref(database, `/links/${surl}`));
 }

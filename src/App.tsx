@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {initializeApp} from "firebase/app";
 import {getAnalytics} from "firebase/analytics";
-import {getDatabase} from "firebase/database";
+import {getDatabase, onValue, ref} from "firebase/database";
 import {getAuth} from "firebase/auth";
 import {read, resolveUserLinks, write} from "./Database";
 import Authentication from "./components/Authentication";
@@ -9,6 +9,7 @@ import useLocalStorageState from "use-local-storage-state";
 import {useAuthState} from "react-firebase-hooks/auth";
 import LinksTable from "./components/LinksTable";
 import {LinkDataType} from "./types";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
@@ -43,6 +44,10 @@ function App() {
         setResolvedLinks(await resolveUserLinks(uid));
     }
 
+    const update = onValue(ref(database, `/users/${uid}/links`), async snapshot => {
+        setResolvedLinks(await resolveUserLinks(uid));
+    })
+
     return (
         <div className={"flex flex-col justify-center items-center m-8"}>
             <Authentication className={"flex flex-row"}/>
@@ -56,7 +61,7 @@ function App() {
                 <button className={"rounded-full bg-amber-200"} type={"submit"} onClick={() => resolve()}>read links</button>
             </div>
 
-            <LinksTable className={"flex flex-row"} links={resolvedLinks}/>
+            <LinksTable className={"flex flex-row"} links={resolvedLinks}  userid={uid}/>
 
         </div>
     );
