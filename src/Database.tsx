@@ -23,8 +23,8 @@ export async function read(key: string) {
 export async function resolveUserLinks(userid: string | undefined): Promise<{ [index: string]: string }> {
     let data: { [index: string]: string } = {};
     if (!userid) return data;
-    const linkRef = ref(database, `/users/${userid}/links`);
-    onValue(linkRef, async (snapshot) => {
+    await get(child(ref(database), `/users/${userid}/links`))
+        .then(async (snapshot) => {
         const keys = Object.keys(snapshot.exportVal())
         await Promise.all(keys.map(async k => {
             data[k] = await read(k);

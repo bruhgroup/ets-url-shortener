@@ -8,6 +8,7 @@ import Authentication from "./components/Authentication";
 import useLocalStorageState from "use-local-storage-state";
 import {useAuthState} from "react-firebase-hooks/auth";
 import LinksTable from "./components/LinksTable";
+import {LinkDataType} from "./types";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
@@ -27,23 +28,23 @@ export const auth = getAuth(firebase);
 function App() {
     const [user, loading, error] = useAuthState(auth);
     const [uid, setUid] = useState(user?.uid);
-    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<{ [index: string]: string }>("resolve-links", {defaultValue: {}})
+    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkDataType>("resolve-links", {defaultValue: {}})
 
     // Update UID once user logs in.
     useEffect(() => {
         if (!loading) {
             setUid(user?.uid);
+            console.log(resolvedLinks)
         }
-    }, [user, loading]);
+    }, [user, loading, resolvedLinks]);
 
     const resolve = async () => {
         console.log({uid})
         setResolvedLinks(await resolveUserLinks(uid));
-        console.log({resolvedLinks})
     }
 
     return (
-        <div className={"flex flex-col justify-center items-center"}>
+        <div className={"flex flex-col justify-center items-center m-8"}>
             <Authentication className={"flex flex-row"}/>
 
             <div className={"flex flex-row space-x-4"}>
@@ -52,13 +53,10 @@ function App() {
                 </button>
                 <button className={"rounded-full bg-amber-200"} type={"submit"} onClick={() => read("ummmy")}>read
                 </button>
-                <button className={"rounded-full bg-amber-200"} type={"submit"} onClick={() => resolve()}>user links
-                    read
-                </button>
+                <button className={"rounded-full bg-amber-200"} type={"submit"} onClick={() => resolve()}>read links</button>
             </div>
 
-
-            <LinksTable className={"flex flex-row"}/>
+            <LinksTable className={"flex flex-row"} links={resolvedLinks}/>
 
         </div>
     );
