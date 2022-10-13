@@ -1,20 +1,20 @@
 import React, {useState} from 'react';
 import {auth} from "../App";
-import {useAuthState, useCreateUserWithEmailAndPassword} from "react-firebase-hooks/auth";
+import {useAuthState, useCreateUserWithEmailAndPassword, useSignInWithEmailAndPassword} from "react-firebase-hooks/auth";
 import {signOut} from "firebase/auth";
 
-export default function Authentication() {
+export default function Authentication({className}: {className: string}) {
     const [user, loading, error] = useAuthState(auth);
     if (error) {
-        return <p>Error: {error.message}</p>;
+        return <p className={className}>Error: {error.message}</p>;
     }
     if (loading) {
-        return <p>loading auth state...</p>;
+        return <p className={className}>loading auth state...</p>;
     }
     if (user) {
-        return <><p>u signed in as {user.email}</p><Logout/></>
+        return <div className={className}><p >u signed in as {user.email}</p><Logout/></div>
     }
-    return ( <><Create/></>)
+    return ( <div className={className}><Create/><Login/></div>)
 }
 
 function Create() {
@@ -62,7 +62,47 @@ function Create() {
 }
 
 function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [
+        signInWithEmailAndPassword,
+        user,
+        loading,
+        error,
+    ] = useSignInWithEmailAndPassword(auth);
 
+    if (error) {
+        return (
+            <p>Error: {error.message}</p>
+        );
+    }
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+    if (user) {
+        return (
+            <p>signed in user: {user.user.email}</p>
+        );
+    }
+    return (
+        <div className="App">
+            <label htmlFor="email">email</label>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+            <label htmlFor="password">password</label>
+            <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            <button onClick={() => signInWithEmailAndPassword(email, password)}>
+                Log in
+            </button>
+        </div>
+    );
 }
 
 function Logout() {

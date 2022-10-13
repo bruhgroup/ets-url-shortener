@@ -1,14 +1,13 @@
-import React from 'react';
-import './App.css';
-
+import React, {useEffect, useState} from 'react';
 import {initializeApp} from "firebase/app";
 import {getAnalytics} from "firebase/analytics";
 import {getDatabase} from "firebase/database";
 import {getAuth} from "firebase/auth";
-import {createUser, read, write} from "./Database";
+import {read, resolveUserLinks, write} from "./Database";
 import Authentication from "./components/Authentication";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import useLocalStorageState from "use-local-storage-state";
+import {useAuthState} from "react-firebase-hooks/auth";
+import LinksTable from "./components/LinksTable";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
@@ -20,20 +19,46 @@ const firebaseConfig = {
     appId: "1:44963408642:web:83caa24a0d7c31052b301b",
     measurementId: "G-LKSEDM1380"
 };
-
 export const firebase = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(firebase);
 export const database = getDatabase(firebase);
 export const auth = getAuth(firebase);
 
 function App() {
-    return (
-        <div className="App">
-            <button type={"submit"} onClick={() => write("5", "mmmmm", "ummmy")}>write
-            </button>
-            <button type={"submit"} onClick={() => read("ummmy")}>read</button>
+    const [user, loading, error] = useAuthState(auth);
+    const [uid, setUid] = useState(user?.uid);
+    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<{ [index: string]: string }>("resolve-links", {defaultValue: {}})
 
-            <Authentication/>
+    // Update UID once user logs in.
+    useEffect(() => {
+        if (!loading) {
+            setUid(user?.uid);
+        }
+    }, [user, loading]);
+
+    const resolve = async () => {
+        console.log({uid})
+        setResolvedLinks(await resolveUserLinks(uid));
+        console.log({resolvedLinks})
+    }
+
+    return (
+        <div className={"flex flex-col justify-center items-center"}>
+            <Authentication className={"flex flex-row"}/>
+
+            <div className={"flex flex-row space-x-4"}>
+                <button className={"rounded-full bg-amber-200"} type={"submit"}
+                        onClick={() => write(uid, (Math.random() + 1).toString(36).substring(7), (Math.random() + 1).toString(36).substring(7))}>write
+                </button>
+                <button className={"rounded-full bg-amber-200"} type={"submit"} onClick={() => read("ummmy")}>read
+                </button>
+                <button className={"rounded-full bg-amber-200"} type={"submit"} onClick={() => resolve()}>user links
+                    read
+                </button>
+            </div>
+
+
+            <LinksTable className={"flex flex-row"}/>
 
         </div>
     );
