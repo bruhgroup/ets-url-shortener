@@ -6,6 +6,7 @@ import {getAuth} from "firebase/auth";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Home from "./pages/Home";
 import Redirect from "./pages/Redirect";
+import Test from "./pages/Test";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
@@ -27,6 +28,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route index element={<Home/>}/>
+                <Route path={"/test"} element={<Test/>}/>
                 <Route path={"/*"} element={<Redirect/>}/>
             </Routes>
         </BrowserRouter>

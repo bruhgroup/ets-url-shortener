@@ -16,7 +16,7 @@ function Redirect() {
 
     return (
         <div className={"flex flex-col justify-center items-center m-8"}>
-            <p>Redirecting to xyz</p>
+            <p>Redirecting to {path}</p>
         </div>
     );
 }

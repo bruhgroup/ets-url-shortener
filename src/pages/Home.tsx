@@ -15,7 +15,6 @@ function Home() {
     const [link, setLink] = useState('');
     const [customLink, setCustomLink] = useState('');
 
-
     // Update UID once user logs in.
     useEffect(() => {
         if (loading) return;
@@ -27,7 +26,6 @@ function Home() {
             setResolvedLinks(await resolveUserLinks(uid, snapshot));
         })
     }, [user, loading, uid, setResolvedLinks]);
-
 
     return (
         <div className={"max-w-screen-2xl mx-auto my-4"}>
@@ -59,7 +57,7 @@ function Home() {
                     </button>
                 </div>
 
-                <LinksTable className={"flex flex-row"} links={resolvedLinks} userid={uid}/>
+                <LinksTable links={resolvedLinks} userid={uid}/>
 
             </div>
         </div>
