@@ -42,14 +42,16 @@ function Create() {
     }
     return (
         <div className="App">
-            <label htmlFor="email">email</label>
+            <label htmlFor="email"> email </label>
             <input
+                className={"border-2 border-solid border-black rounded"}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <label htmlFor="password">password</label>
+            <label htmlFor="password">password </label>
             <input
+                className={"border-2 border-solid border-black rounded"}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -86,25 +88,27 @@ function Login() {
     }
     return (
         <div className="App">
-            <label htmlFor="email">email</label>
+            <label htmlFor="email">email </label>
             <input
+                className={"border-2 border-solid border-black rounded"}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <label htmlFor="password">password</label>
+            <label htmlFor="password"> password </label>
             <input
+                className={"border-2 border-solid border-black rounded"}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
             <button onClick={() => signInWithEmailAndPassword(email, password)}>
-                Log in
+                 Log in
             </button>
         </div>
     );
 }
 
 function Logout() {
-    return (<button onClick={() => signOut(auth)}>Logout</button>)
+    return (<button className={"rounded bg-sky-500 hover:bg-sky-400"} onClick={() => signOut(auth)}>Logout</button>)
 }
