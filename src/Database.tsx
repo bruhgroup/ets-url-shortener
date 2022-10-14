@@ -4,12 +4,13 @@ import {LinkDataType} from "./types";
 
 export function write(userid: string | undefined, url: string, surl: string) {
     if (!userid) return;
-
-    surl = surl === "" ? surl : (Math.random() + 1).toString(36).substring(7);
+    //TODO: validate surl
+    //for testing
+    url = url === "" ? (Math.random() + 1).toString(36).substring(7) : url;
+    surl = surl === "" ? (Math.random() + 1).toString(36).substring(7) : surl;
     const updates: { [index: string]: string | boolean } = {};
     updates[`/links/${surl}`] = url;
     updates[`/users/${userid}/links/${surl}`] = true;
-
     return update(ref(database), updates);
 }
 

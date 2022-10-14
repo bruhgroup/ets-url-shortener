@@ -7,9 +7,9 @@ export default function LinksTable({className, links, userid}: { className: stri
             <table className="table-auto border-collapse border border-slate-500 bg-slate-400">
                 <thead>
                 <tr>
-                    <th className={"border border-slate-700"}>Shortened</th>
-                    <th className={"border border-slate-700"}>Long url</th>
-                    <th className={"border border-slate-700 align-center"}> remove </th>
+                    <th className={"border border-slate-700 px-0.5"}>Shortened</th>
+                    <th className={"border border-slate-700 px-0.5"}>Long url</th>
+                    <th className={"border border-slate-700 px-0.5"}> remove </th>
                 </tr>
                 </thead>
                 <tbody className={"bg-slate-500"}>
@@ -17,8 +17,8 @@ export default function LinksTable({className, links, userid}: { className: stri
                     return (<tr>
                         <td className="border border-slate-700"> {l[0]} </td>
                         <td className="border border-slate-700"> {l[1]} </td>
-                        <td className={"object-center border border-slate-700 bg-red-200"}>
-                            <button className={"not-italic hover:italic"} onClick={() => removeData(userid,`${l[0]}`)}>  x</button>
+                        <td className={"py-2 px-6 border border-slate-700"}>
+                            <button className={"underline text-red-800 not-italic hover:italic"} onClick={() => removeData(userid,`${l[0]}`)}>x</button>
                         </td>
                     </tr>)
                 })}

@@ -12,7 +12,7 @@ export default function Authentication({className}: {className: string}) {
         return <p className={className}>loading auth state...</p>;
     }
     if (user) {
-        return <div className={className}><p >u signed in as {user.email}</p><Logout/></div>
+        return <div className={"flex flex-row space-x-2"}><p >Signed in as {user.email}</p><Logout/></div>
     }
     return ( <div className={className}><Create/><Login/></div>)
 }
@@ -110,5 +110,5 @@ function Login() {
 }
 
 function Logout() {
-    return (<button className={"rounded bg-sky-500 hover:bg-sky-400"} onClick={() => signOut(auth)}>Logout</button>)
+    return (<button className={"rounded bg-gray-400 hover:bg-gray-300 px-1 "} onClick={() => signOut(auth)}>Logout</button>)
 }
