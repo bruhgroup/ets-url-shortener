@@ -7,6 +7,7 @@ import Authentication from "../components/Authentication";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkDataType} from "../types";
 import {auth, database} from "../App";
+import {validateUrls} from "../validation";
 
 function Home() {
     const [user, loading, error] = useAuthState(auth);
@@ -48,12 +49,13 @@ function Home() {
                     <input
                         className={"border border-solid border-gray-500 rounded bg-gray-100"}
                         type="text"
+                        pattern="[A-Za-z]" title={"bruhdoens'twork"}
                         placeholder={" leave blank for random"}
                         value={customLink}
                         onChange={(e) => setCustomLink(e.target.value)}
                     />
                     <button className={"rounded-full bg-amber-200 px-1"} type={"submit"}
-                            onClick={() => write(uid,link,customLink)}>Shorten
+                            onClick={() => {validateUrls(link,customLink) ;write(uid,link,customLink); }}>Shorten
                     </button>
                 </div>
 

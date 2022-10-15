@@ -8,6 +8,15 @@ export function write(userid: string | undefined, url: string, surl: string) {
     //for testing
     url = url === "" ? (Math.random() + 1).toString(36).substring(7) : url;
     surl = surl === "" ? (Math.random() + 1).toString(36).substring(7) : surl;
+    let r = ref(database);
+    get(child(r, `/links/${surl}`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            alert("Surl already exists!!")
+            return false;
+        }
+    }).catch((error) => {
+        console.error(error);
+    });
     const updates: { [index: string]: string | boolean } = {};
     updates[`/links/${surl}`] = url;
     updates[`/users/${userid}/links/${surl}`] = true;
