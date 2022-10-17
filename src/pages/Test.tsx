@@ -6,6 +6,7 @@ import useLocalStorageState from "use-local-storage-state";
 import {LinkDataType} from "../types";
 import {onValue, ref} from "firebase/database";
 import {resolveUserLinks, write} from "../Database";
+import NavBar from "../components/NavBar";
 
 function Test() {
     const [user, loading, error] = useAuthState(auth);
@@ -27,26 +28,29 @@ function Test() {
     }, [user, loading, uid, setResolvedLinks]);
 
     return (
-        <div className={"max-w-screen-md mx-auto my-4 p-4"}>
-            <div className={"flex flex-col items-center justify-center"}>
-                <div className={"flex flex-row w-full"}>
-                    <div className={"flex flex-column w-[90%]"}>
-                        <input
-                            className={"w-full border border-solid border-black rounded-l"}
-                            type="text"
-                            placeholder={"Paste a link here"}
-                        />
+        <>
+            <NavBar/>
+            <div className={"max-w-screen-md mx-auto my-4 p-4"}>
+                <div className={"flex flex-col items-center justify-center"}>
+                    <div className={"flex flex-row w-full"}>
+                        <div className={"flex flex-column w-[90%]"}>
+                            <input
+                                className={"w-full border border-solid border-black rounded-l"}
+                                type="text"
+                                placeholder={"Paste a link here"}
+                            />
+                        </div>
+                        <div className={"flex flex-column w-[10%]"}>
+                            <button className={"rounded-r bg-amber-200 px-1 w-full"} type={"submit"}>Enter</button>
+                        </div>
                     </div>
-                    <div className={"flex flex-column w-[10%]"}>
-                        <button className={"rounded-r bg-amber-200 px-1 w-full"} type={"submit"}>Enter</button>
+                    <div className={"flex flex-row"}><p>Test!</p></div>
+                    <div className={"flex flex-row w-full"}>
+                        <LinksTable links={resolvedLinks} userid={uid}/>
                     </div>
-                </div>
-                <div className={"flex flex-row"}><p>Test!</p></div>
-                <div className={"flex flex-row w-full"}>
-                    <LinksTable links={resolvedLinks} userid={uid}/>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
