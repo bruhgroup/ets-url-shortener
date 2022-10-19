@@ -11,8 +11,8 @@ export function write(userid: string | undefined, url: string, surl: string) {
     let r = ref(database);
     get(child(r, `/links/${surl}`)).then((snapshot) => {
         if (snapshot.exists()) {
-            alert("Surl already exists!!")
-            return false;
+            alert("Surl already exists!!");
+            return;
         }
     }).catch((error) => {
         console.error(error);
