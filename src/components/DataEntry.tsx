@@ -16,6 +16,8 @@ export default function DataEntry() {
                 <input
                     className={"flex rounded w-[50%] p-2 min-w-[20px] border-2 border-c-gray-300"}
                     placeholder={link ?? "Your URL to shorten"}
+                    onChange={(e) => setLink(e.target.value)}
+                    type={"url"}
                 />
                 <ArrowIcon/>
                 <div className={"flex flex-row items-center w-[50%] border-2 border-c-gray-300 rounded"}>
@@ -25,6 +27,8 @@ export default function DataEntry() {
                     <input
                         className={"w-full p-2 min-w-[50px]"}
                         placeholder={`${customLink} (or set your own)`}
+                        onChange={(e) => setCustomLink(e.target.value)}
+                        type={"text"}
                     />
                 </div>
             </div>
@@ -34,9 +38,13 @@ export default function DataEntry() {
                     <input
                         className={"flex-grow-[1] min-w-[20px] rounded p-2 border-2 border-c-gray-300"}
                         placeholder={description ?? "Add a description (recommended)"}
+                        onChange={(e) => setDescription(e.target.value)}
+                        type={"text"}
                     />
                     <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-black font-medium"}>
-                        <button className={"text-white"}>Create Short URL</button>
+                        <button className={"text-white"} type={"submit"}
+                                onClick={() => console.log("make an url")}>Create Short URL
+                        </button>
                     </div>
                 </div>
                 <div className={"flex justify-evenly items-center gap-[10px] w-full"}>

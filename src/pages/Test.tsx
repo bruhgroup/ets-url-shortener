@@ -34,18 +34,6 @@ function Test() {
             <div className={"max-w-screen-md mx-auto my-4 p-4 flex flex-col gap-2 bg-white rounded-xl"}>
                 <DataEntry/>
                 <div className={"flex flex-col items-center justify-center"}>
-                    <div className={"flex flex-row w-full"}>
-                        <div className={"flex flex-column w-[90%]"}>
-                            <input
-                                className={"w-full border border-solid border-black rounded-l"}
-                                type="text"
-                                placeholder={"Paste a link here"}
-                            />
-                        </div>
-                        <div className={"flex flex-column w-[10%]"}>
-                            <button className={"rounded-r bg-amber-200 px-1 w-full"} type={"submit"}>Enter</button>
-                        </div>
-                    </div>
                     <div className={"flex flex-row"}><p>Test!</p></div>
                     <div className={"flex flex-row w-full"}>
                         <LinksTable links={resolvedLinks} userid={uid}/>
