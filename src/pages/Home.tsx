@@ -7,7 +7,6 @@ import Authentication from "../components/Authentication";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkDataType} from "../types";
 import {auth, database} from "../App";
-import {validateUrls} from "../validation";
 
 function Home() {
     const [user, loading, error] = useAuthState(auth);
@@ -32,33 +31,36 @@ function Home() {
         <div className={"max-w-screen-2xl mx-auto my-4"}>
             <div className={"flex flex-col justify-center items-center"}>
                 <Authentication className={"flex flex-col space-x-2"}/>
+                <form
+                        id={"urls"}
+                        onSubmit={(e)  => {e.preventDefault(); write(uid,link,customLink)}}>
+                    <div className={"flex flex-row space-x-4"}>
+                        <input
+                            className={"border border-solid border-black rounded bg-gray-100"}
+                            type="url"
+                            placeholder={"Paste a link here"}
+                            value={link}
+                            onChange={(e) => setLink(e.target.value)}
+                        />
+                    </div>
 
-                <div className={"flex flex-row space-x-4"}>
-                    <input
-                        className={"border border-solid border-black rounded bg-gray-100"}
-                        type="text"
-                        placeholder={"Paste a link here"}
-                        //TODO: Change to url verification
-                        value={link}
-                        onChange={(e) => setLink(e.target.value)}
-                    />
-                </div>
+                    <div className={"flex flex-row py-1"}>
+                        <p>hi.gov/</p>
 
-                <div className={"flex flex-row py-1"}>
-                    <p>hi.gov/</p>
-                    <input
-                        className={"border border-solid border-gray-500 rounded bg-gray-100"}
-                        type="text"
-                        pattern="[A-Za-z]" title={"bruhdoens'twork"}
-                        placeholder={" leave blank for random"}
-                        value={customLink}
-                        onChange={(e) => setCustomLink(e.target.value)}
-                    />
-                    <button className={"rounded-full bg-amber-200 px-1"} type={"submit"}
-                            onClick={() => {validateUrls(link,customLink) ;write(uid,link,customLink); }}>Shorten
-                    </button>
-                </div>
-
+                            <input
+                                className={"border border-solid border-gray-500 rounded bg-gray-100"}
+                                type="text"
+                                pattern= "[a-zA-Z0-9]+$"
+                                placeholder= {" leave blank for random"}
+                                value={customLink}
+                                onChange={(e) => {setCustomLink(e.target.value); console.log(e.target.value)}}
+                            />
+                            <button className={"rounded-full bg-amber-200 px-1"}
+                                    type={"submit"}
+                                    >Shorten
+                            </button>
+                    </div>
+                </form>
                 <LinksTable links={resolvedLinks} userid={uid}/>
 
             </div>
