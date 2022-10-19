@@ -29,9 +29,9 @@ function Test() {
     }, [user, loading, uid, setResolvedLinks]);
 
     return (
-        <>
+        <div className={"bg-c-gray-100 h-full min-h-screen"}>
             <NavBar/>
-            <div className={"max-w-screen-md mx-auto my-4 p-4 flex flex-col gap-2"}>
+            <div className={"max-w-screen-md mx-auto my-4 p-4 flex flex-col gap-2 bg-white rounded-xl"}>
                 <DataEntry/>
                 <div className={"flex flex-col items-center justify-center"}>
                     <div className={"flex flex-row w-full"}>
@@ -52,7 +52,7 @@ function Test() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
