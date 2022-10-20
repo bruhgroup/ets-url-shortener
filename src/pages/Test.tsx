@@ -8,6 +8,7 @@ import {onValue, ref} from "firebase/database";
 import {resolveUserLinks, write} from "../Database";
 import NavBar from "../components/NavBar";
 import DataEntry from "../components/DataEntry";
+import Table from "../components/Table";
 
 function Test() {
     const [user, loading, error] = useAuthState(auth);
@@ -36,7 +37,7 @@ function Test() {
                 <div className={"flex flex-col items-center justify-center"}>
                     <div className={"flex flex-row"}><p>Test!</p></div>
                     <div className={"flex flex-row w-full"}>
-                        <LinksTable links={resolvedLinks} userid={uid}/>
+                        <Table links={resolvedLinks} userid={uid}/>
                     </div>
                 </div>
             </div>

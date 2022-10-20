@@ -62,7 +62,6 @@ function Home() {
                     </div>
                 </form>
                 <LinksTable links={resolvedLinks} userid={uid}/>
-
             </div>
         </div>
     );
