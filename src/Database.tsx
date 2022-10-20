@@ -4,13 +4,19 @@ import {LinkDataType} from "./types";
 
 export function write(userid: string | undefined, url: string, surl: string) {
     if (!userid) return;
-    //TODO: validate surl
-    //for testing
-    url = url === "" ? (Math.random() + 1).toString(36).substring(7) : url;
-    surl = surl === "" ? (Math.random() + 1).toString(36).substring(7) : surl;
+    let result = generateDistinct();
+    //Legacy: remove later
+    let urlResult = generateDistinct();
+    url = url === "" ? urlResult : url;
+    surl = surl === "" ? result : surl;
     let r = ref(database);
     get(child(r, `/links/${surl}`)).then((snapshot) => {
         if (snapshot.exists()) {
+            if (surl === result) {
+                generateDistinct();
+                write(userid,url, "");
+                return;
+            }
             alert("Surl already exists!!");
             return;
         }
@@ -21,6 +27,18 @@ export function write(userid: string | undefined, url: string, surl: string) {
     updates[`/links/${surl}`] = url;
     updates[`/users/${userid}/links/${surl}`] = true;
     return update(ref(database), updates);
+}
+
+/**
+ * #Creates a random string with distinct lettering
+ */
+export function generateDistinct() {
+    const distinct: string = "ABCDEFGHJKLMNPQRSTUVabcdefhjkmnorstuv23456789"
+    let result = "";
+    for ( let i = 0; i < 6; i++ ) {
+        result += distinct.charAt(Math.floor(Math.random() * distinct.length));
+    }
+    return result;
 }
 
 export async function resolveLink(key: string) {
