@@ -1,7 +1,7 @@
-import {LinkDataType} from "../types";
+import {LinkData} from "../types";
 import {removeData} from "../Database";
 
-export default function LinksTable({links, userid}: { links: LinkDataType, userid: string | undefined }) {
+export default function LinksTable({links, userid}: { links: LinkData[], userid: string | undefined }) {
     return (
         <table className="table-fixed border-collapse border border-slate-500 bg-slate-40 w-full">
             <thead>
@@ -12,14 +12,14 @@ export default function LinksTable({links, userid}: { links: LinkDataType, useri
             </tr>
             </thead>
             <tbody className={"bg-slate-500"}>
-            {Object.entries(links).map((l, k) => {
+            {links.map((l, k) => {
                 return (<tr key={k} className={"odd:bg-white even:bg-slate-200"}>
                     <td className={"flex justify-center border border-slate-700"}>
                         <button className={"bg-red-600 rounded-2xl w-6 h-6"}
-                                onClick={() => removeData(userid, `${l[0]}`)}/>
+                                onClick={() => removeData(userid, `${l.short}`)}/>
                     </td>
-                    <td className={"border border-slate-700"}> {l[0]} </td>
-                    <td className={"border border-slate-700"}> {l[1]} </td>
+                    <td className={"border border-slate-700"}> {l.short} </td>
+                    <td className={"border border-slate-700"}> {l.long} </td>
                 </tr>)
             })}
             </tbody>

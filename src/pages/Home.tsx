@@ -5,13 +5,13 @@ import LinksTable from "../components/LinksTable";
 import {useEffect, useState} from "react";
 import Authentication from "../components/Authentication";
 import useLocalStorageState from "use-local-storage-state";
-import {LinkDataType} from "../types";
+import {LinkData} from "../types";
 import {auth, database} from "../App";
 
 function Home() {
     const [user, loading, error] = useAuthState(auth);
     const [uid, setUid] = useState(user?.uid);
-    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkDataType>("resolve-links", {defaultValue: {}})
+    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []})
     const [link, setLink] = useState('');
     const [customLink, setCustomLink] = useState('');
 

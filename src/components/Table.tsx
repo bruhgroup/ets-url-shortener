@@ -6,59 +6,29 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {useState, useMemo} from "react";
-import {LinkDataType} from "../types";
-import LinkIcon from "../assets/LinkIcon";
-
-type LinkData = {
-    long: string,
-    short: string
-}
-
-const data: LinkData[] = [
-    {
-        long: "somelongURL",
-        short: "abcdsde"
-    },
-    {
-        long: "fancyIRl",
-        short: "bcdcds"
-    },
-    {
-        long: "coolIRL",
-        short: "zfdsjdsk"
-    },
-    {
-        long: "Undersea",
-        short: "ijiwdsd"
-    }
-]
+import {LinkData} from "../types";
 
 const columnHelper = createColumnHelper<LinkData>()
 
-export default function Table({links, userid}: { links: LinkDataType, userid: string | undefined }) {
+export default function Table({links, userid}: { links: LinkData[], userid: string | undefined }) {
     const [sorting, setSorting] = useState<SortingState>([])
 
-    const columns = useMemo<ColumnDef<LinkData>[]>(
+    const columns = useMemo<ColumnDef<LinkData, any>[]>(
         () => [
             columnHelper.display({
                 id: 'actions',
                 cell: props => <button>hehex</button>,
             }),
-            columnHelper.group({
-                header: "Data",
-                columns: [
-                    columnHelper.accessor("short", {
-                        cell: info => info.getValue(),
-                    }),
-                    columnHelper.accessor("long", {
-                        cell: info => info.getValue(),
-                    }),
-                ]
+            columnHelper.accessor("short", {
+                cell: info => info.getValue(),
+            }),
+            columnHelper.accessor("long", {
+                cell: info => info.getValue(),
             })
         ], [])
 
     const table = useReactTable({
-        data: data,
+        data: links,
         columns: columns,
         state: {sorting},
         onSortingChange: setSorting,
@@ -88,8 +58,8 @@ export default function Table({links, userid}: { links: LinkDataType, userid: st
                                             header.getContext()
                                         )}
                                         {{
-                                            asc: 'up',
-                                            desc: 'down',
+                                            asc: '⬆️',
+                                            desc: '👎',
                                         }[header.column.getIsSorted() as string] ?? null}
                                     </div>
                                 )}

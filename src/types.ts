@@ -1,1 +1,4 @@
-export type LinkDataType = { [index: string]: string }
+export type LinkData = {
+    long: string,
+    short: string
+}

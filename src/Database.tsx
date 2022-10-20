@@ -1,6 +1,6 @@
 import {database} from "./App";
 import {child, get, ref, update, remove, DataSnapshot} from "firebase/database";
-import {LinkDataType} from "./types";
+import {LinkData} from "./types";
 
 export function write(userid: string | undefined, url: string, surl: string) {
     if (!userid) return;
@@ -14,7 +14,7 @@ export function write(userid: string | undefined, url: string, surl: string) {
         if (snapshot.exists()) {
             if (surl === result) {
                 generateDistinct();
-                write(userid,url, "");
+                write(userid, url, "");
                 return;
             }
             alert("Surl already exists!!");
@@ -35,7 +35,7 @@ export function write(userid: string | undefined, url: string, surl: string) {
 export function generateDistinct() {
     const distinct: string = "ABCDEFGHJKLMNPQRSTUVabcdefhjkmnorstuv23456789"
     let result = "";
-    for ( let i = 0; i < 6; i++ ) {
+    for (let i = 0; i < 6; i++) {
         result += distinct.charAt(Math.floor(Math.random() * distinct.length));
     }
     return result;
@@ -48,8 +48,8 @@ export async function resolveLink(key: string) {
     return data;
 }
 
-export async function resolveUserLinks(userid: string | undefined, snapshot?: DataSnapshot): Promise<LinkDataType> {
-    if (!userid) return {} as LinkDataType;
+export async function resolveUserLinks(userid: string | undefined, snapshot?: DataSnapshot): Promise<LinkData[]> {
+    if (!userid) return [] as LinkData[];
     if (snapshot) return resolveSnapshotUserLinks(snapshot);
     const newSnapshot = await get(child(ref(database), `/users/${userid}/links`));
     console.log({_msg: "new snapshot", ...newSnapshot});
@@ -57,9 +57,9 @@ export async function resolveUserLinks(userid: string | undefined, snapshot?: Da
 }
 
 async function resolveSnapshotUserLinks(snapshot: DataSnapshot) {
-    let data: { [index: string]: string } = {};
+    let data: LinkData[] = [];
     const keys = snapshot.exportVal() == null ? Object.keys(0) : Object.keys(snapshot.exportVal())
-    await Promise.all(keys.map(async k => data[k] = await resolveLink(k)))
+    await Promise.all(keys.map(async k => data.push({short: await resolveLink(k), long: k})))
     return data;
 }
 

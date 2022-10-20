@@ -3,7 +3,7 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {auth, database} from "../App";
 import {useEffect, useState} from "react";
 import useLocalStorageState from "use-local-storage-state";
-import {LinkDataType} from "../types";
+import {LinkData} from "../types";
 import {onValue, ref} from "firebase/database";
 import {resolveUserLinks, write} from "../Database";
 import NavBar from "../components/NavBar";
@@ -13,7 +13,7 @@ import Table from "../components/Table";
 function Test() {
     const [user, loading, error] = useAuthState(auth);
     const [uid, setUid] = useState(user?.uid);
-    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkDataType>("resolve-links", {defaultValue: {}})
+    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []})
     const [link, setLink] = useState('');
     const [customLink, setCustomLink] = useState('');
 
