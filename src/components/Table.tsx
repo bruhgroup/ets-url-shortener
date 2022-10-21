@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-table";
 import {useState, useMemo} from "react";
 import {LinkData} from "../types";
+import {removeData} from "../Database";
 
 const columnHelper = createColumnHelper<LinkData>()
 
@@ -17,7 +18,9 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
         () => [
             columnHelper.display({
                 id: 'actions',
-                cell: props => <button>hehex</button>,
+                cell: (props) =>
+                    <button className={"bg-red-600 rounded-2xl w-6 h-6"}
+                            onClick={() => removeData(userid, `${props.row.getVisibleCells()[1].getValue() ?? ""}`)}/>
             }),
             columnHelper.accessor("short", {
                 cell: info => info.getValue(),
@@ -25,7 +28,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
             columnHelper.accessor("long", {
                 cell: info => info.getValue(),
             })
-        ], [])
+        ], [userid])
 
     const table = useReactTable({
         data: links,

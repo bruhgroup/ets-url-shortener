@@ -59,11 +59,11 @@ export async function resolveUserLinks(userid: string | undefined, snapshot?: Da
 async function resolveSnapshotUserLinks(snapshot: DataSnapshot) {
     let data: LinkData[] = [];
     const keys = snapshot.exportVal() == null ? Object.keys(0) : Object.keys(snapshot.exportVal())
-    await Promise.all(keys.map(async k => data.push({short: await resolveLink(k), long: k})))
+    await Promise.all(keys.map(async k => data.push({short: k, long: await resolveLink(k)})))
     return data;
 }
 
-export async function removeData(userid: string | undefined, surl: string) {
-    await remove(ref(database, `/users/${userid}/links/${surl}`));
-    await remove(ref(database, `/links/${surl}`));
+export function removeData(userid: string | undefined, surl: string) {
+    remove(ref(database, `/users/${userid}/links/${surl}`));
+    remove(ref(database, `/links/${surl}`));
 }
