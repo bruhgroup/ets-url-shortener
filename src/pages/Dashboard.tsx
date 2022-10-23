@@ -9,7 +9,7 @@ import DataEntry from "../components/DataEntry";
 import Table from "../components/Table";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 
-function Test() {
+function Dashboard() {
     const [user, loading, error] = useAuthState(auth);
     const [uid, setUid] = useState(user?.uid);
     const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []})
@@ -44,4 +44,4 @@ function Test() {
     )
 }
 
-export default Test;
+export default Dashboard;

@@ -2,6 +2,12 @@ import React, {useState} from 'react';
 import {auth} from "../App";
 import {useAuthState, useCreateUserWithEmailAndPassword, useSignInWithEmailAndPassword} from "react-firebase-hooks/auth";
 import {signOut} from "firebase/auth";
+import {Navigate, Route} from "react-router-dom";
+import home from "../pages/Home";
+import Home from "../pages/Home";
+import Switch from "./Switch";
+import Redirect from "../pages/Redirect";
+
 
 export default function Authentication({className}: {className: string}) {
     const [user, loading, error] = useAuthState(auth);
@@ -11,8 +17,15 @@ export default function Authentication({className}: {className: string}) {
     if (loading) {
         return <p className={className}>loading auth state...</p>;
     }
+
     if (user) {
-        return <div className={"flex flex-row space-x-2"}><p >Signed in as {user.email}</p><Logout/></div>
+        return (
+            <div>
+                <Navigate to="/dashboard"/>
+                <div className={"flex flex-row space-x-2"}><p >Signed in as {user.email}</p><Logout/></div>
+            </div>
+    )
+
     }
     return ( <div className={className}><Create/><Login/></div>)
 }
@@ -109,6 +122,6 @@ function Login() {
     );
 }
 
-function Logout() {
-    return (<button className={"rounded bg-gray-400 hover:bg-gray-300 px-1 "} onClick={() => signOut(auth)}>Logout</button>)
+export function Logout() {
+    return (<button className={"items-center text-white text-xl "} onClick={() => signOut(auth)}>Logout</button>)
 }

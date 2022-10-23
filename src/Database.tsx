@@ -14,6 +14,7 @@ export async function write(userid: string | undefined, url: string, surl: strin
     url = url === "" ? urlResult : url;
     surl = surl === "" ? result : surl;
     //TODO: Validate surl, right now it overwrites if same surl
+    //possible idea, querery , where: surl == surl
     try {
         await setDoc(doc(firestore, 'links', surl),{
             surl: url
