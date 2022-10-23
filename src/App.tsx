@@ -1,12 +1,15 @@
 import React from 'react';
-import {initializeApp} from "firebase/app";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 import {getAnalytics} from "firebase/analytics";
-import {getDatabase} from "firebase/database";
 import {getAuth} from "firebase/auth";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Home from "./pages/Home";
 import Redirect from "./pages/Redirect";
 import Test from "./pages/Test";
+//TODO:Legacy remove later
+import { getDatabase } from "firebase/database";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
@@ -20,8 +23,11 @@ const firebaseConfig = {
 };
 export const firebase = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(firebase);
-export const database = getDatabase(firebase);
+export const firestore = getFirestore(firebase);
 export const auth = getAuth(firebase);
+//TODO: Legacy remove later
+export const database = getDatabase(firebase);
+
 
 function App() {
     return (

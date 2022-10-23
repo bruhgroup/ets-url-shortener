@@ -6,7 +6,10 @@ import {useEffect, useState} from "react";
 import Authentication from "../components/Authentication";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkData} from "../types";
-import {auth, database} from "../App";
+import {auth, firestore} from "../App";
+import { collection, addDoc,onSnapshot, doc, query,orderBy} from "firebase/firestore";
+import firebase from "firebase/compat";
+import Table from "../components/Table";
 
 function Home() {
     const [user, loading, error] = useAuthState(auth);
@@ -21,10 +24,10 @@ function Home() {
 
         setUid(user?.uid);
         // Always calls once on page load and updates the snapshot, so local storage isn't really doing anything..?
-        return onValue(ref(database, `/users/${uid}/links`), async (snapshot) => {
-            console.log({_msg: "snapshot updated", ...snapshot.exportVal()});
-            setResolvedLinks(await resolveUserLinks(uid, snapshot));
-        })
+        const q = query(collection(firestore,`/users/${uid}/userLinks`), orderBy("surl", "asc"))
+        const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            setResolvedLinks(await resolveUserLinks(uid, querySnapshot));
+        });
     }, [user, loading, uid, setResolvedLinks]);
 
     return (
@@ -61,8 +64,8 @@ function Home() {
                             </button>
                     </div>
                 </form>
-                <LinksTable links={resolvedLinks} userid={uid}/>
             </div>
+            <Table links={resolvedLinks} userid={uid}/>
         </div>
     );
 }

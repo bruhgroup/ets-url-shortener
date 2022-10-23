@@ -5,7 +5,7 @@ import {generateDistinct, write} from "../Database";
 
 export default function DataEntry({userid}: { userid: string | undefined }) {
     const [link, setLink] = useState<string>("");
-    const [customLink, setCustomLink] = useState<string>(generateDistinct());
+    const [customLink, setCustomLink] = useState<string>(generateDistinct(5));
     const [description, setDescription] = useState<string>("");
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
     const [somethingElse, setSomethingElse] = useState<boolean>(false);
@@ -18,7 +18,7 @@ export default function DataEntry({userid}: { userid: string | undefined }) {
                 write(userid, link, customLink);
                 console.log({_msg:"link created", link, customLink, description})
                 setLink("");
-                setCustomLink(generateDistinct());
+                setCustomLink(generateDistinct(5));
                 setDescription("");
             }}
             id={"urls"}>
