@@ -1,9 +1,15 @@
 import {firestore} from "./App";
-import { setDoc, doc, serverTimestamp, QuerySnapshot, DocumentData, deleteDoc} from "firebase/firestore";
+import {
+    setDoc,
+    doc,
+    serverTimestamp,
+    QuerySnapshot,
+    DocumentData,
+    deleteDoc,
+    getDoc
+} from "firebase/firestore";
 import {LinkData} from "./types";
-//TODO: legacy remove later
-import {database} from "./App";
-import {child, get, ref} from "firebase/database";
+
 
 
 export async function write(userid: string | undefined, url: string, surl: string) {
@@ -42,10 +48,11 @@ export function generateDistinct(length: number) {
 
 //TODO: Legacy I think? remove later
 export async function resolveLink(key: string) {
-    let data;
-    const snapshot = await get(child(ref(database), `/links/${key}`));
-    if (snapshot.exists()) data = snapshot.exportVal();
-    return data;
+    let final;
+    const d = doc(firestore, 'links', key)
+    let want = await getDoc(d)
+    if (want.exists()) final = want.data().surl
+    return final;
 }
 
 export async function resolveUserLinks(userid: string | undefined, snapshot?: QuerySnapshot<DocumentData>): Promise<LinkData[]> {

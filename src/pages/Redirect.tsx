@@ -12,7 +12,11 @@ function Redirect() {
     useEffect(() => {
         resolveLink(window.location.pathname).then(setPath);
         console.log({path});
-    }, [path])
+        if (path !== undefined){
+            window.location.href = path;
+        }
+            },
+        [path])
 
     return (
         <div className={"flex flex-col justify-center items-center m-8"}>
