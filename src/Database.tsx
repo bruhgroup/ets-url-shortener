@@ -1,9 +1,9 @@
 import {firestore} from "./App";
-import { collection, setDoc, doc, serverTimestamp, QuerySnapshot, DocumentData, deleteDoc} from "firebase/firestore";
+import { setDoc, doc, serverTimestamp, QuerySnapshot, DocumentData, deleteDoc} from "firebase/firestore";
 import {LinkData} from "./types";
 //TODO: legacy remove later
 import {database} from "./App";
-import {child, get, ref, remove,} from "firebase/database";
+import {child, get, ref} from "firebase/database";
 
 
 export async function write(userid: string | undefined, url: string, surl: string) {
@@ -14,11 +14,11 @@ export async function write(userid: string | undefined, url: string, surl: strin
     url = url === "" ? urlResult : url;
     surl = surl === "" ? result : surl;
     //TODO: Validate surl, right now it overwrites if same surl
+    //possible idea, querery , where: surl == surl
     try {
         await setDoc(doc(firestore, 'links', surl),{
             surl: url
         })
-        const docCol = collection(firestore, `users/${userid}/userLinks`);
         await setDoc(doc(firestore,`users/${userid}/userLinks`, surl),{
             surl: url,
             time: serverTimestamp()

@@ -3,13 +3,13 @@ import {auth, firestore} from "../App";
 import {useEffect, useState} from "react";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkData} from "../types";
-import {resolveUserLinks, write} from "../Database";
+import {resolveUserLinks} from "../Database";
 import NavBar from "../components/NavBar";
 import DataEntry from "../components/DataEntry";
 import Table from "../components/Table";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 
-function Test() {
+function Dashboard() {
     const [user, loading, error] = useAuthState(auth);
     const [uid, setUid] = useState(user?.uid);
     const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []})
@@ -44,4 +44,4 @@ function Test() {
     )
 }
 
-export default Test;
+export default Dashboard;

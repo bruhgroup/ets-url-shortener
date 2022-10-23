@@ -6,7 +6,7 @@ import {getAuth} from "firebase/auth";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Home from "./pages/Home";
 import Redirect from "./pages/Redirect";
-import Test from "./pages/Test";
+import Dashboard from "./pages/Dashboard";
 //TODO:Legacy remove later
 import { getDatabase } from "firebase/database";
 
@@ -34,7 +34,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route index element={<Home/>}/>
-                <Route path={"/test"} element={<Test/>}/>
+                <Route path={"/dashboard"} element={<Dashboard/>}/>
                 <Route path={"/*"} element={<Redirect/>}/>
             </Routes>
         </BrowserRouter>
