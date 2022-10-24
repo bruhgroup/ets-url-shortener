@@ -7,20 +7,35 @@ function Redirect() {
     // TODO: Handle authenticated URLs
     // const [user, loading, error] = useAuthState(auth);
     // const [uid, setUid] = useState(user?.uid);
-    const [path, setPath] = useState();
+    const [path, setPath] = useState<string>();
+    const [cancel, setCancelled] = useState<boolean>(false);
 
     useEffect(() => {
-        resolveLink(window.location.pathname).then(setPath);
-        console.log({path});
-        if (path !== undefined){
-            window.location.href = path;
-        }
-            },
-        [path])
+            resolveLink(window.location.pathname).then(setPath);
+            if (path !== undefined && !cancel) {
+                const timeout = setTimeout(() => {
+                    window.location.href = path;
+                }, 5000);
+                return () => clearTimeout(timeout)
+            }
+        },
+        [path, cancel])
 
     return (
         <div className={"flex flex-col justify-center items-center m-8"}>
-            <p>Redirecting to {path}</p>
+            {
+                cancel ?
+                    <>
+                        <p>Redirect cancelled. {path}</p>
+                    </> :
+                    <>
+                        <p>Redirecting to {path} in 5 seconds...</p>
+                        <button onClick={() => {
+                            setCancelled(true)
+                        }}>Click here to cancel
+                        </button>
+                    </>
+            }
         </div>
     );
 }
