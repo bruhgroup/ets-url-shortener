@@ -8,6 +8,7 @@ export default function DataEntry({userid}: { userid: string | undefined }) {
     const [customLink, setCustomLink] = useState<string>(generateDistinct(5));
     const [description, setDescription] = useState<string>("");
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
+    const [noRedirectTimer, setNoRedirectTimer] = useState<boolean>(false);
     const [somethingElse, setSomethingElse] = useState<boolean>(false);
 
     return (
@@ -15,7 +16,7 @@ export default function DataEntry({userid}: { userid: string | undefined }) {
             className={"flex flex-col justify-center items-center px-[8px] py-[12px] gap-[12px] bg-c-gray-100 rounded"}
             onSubmit={(e) => {
                 e.preventDefault();
-                write(userid, link, customLink);
+                write(userid, link, customLink,description,noRedirectTimer);
                 console.log({_msg:"link created", link, customLink, description})
                 setLink("");
                 setCustomLink(generateDistinct(5));
@@ -64,8 +65,8 @@ export default function DataEntry({userid}: { userid: string | undefined }) {
                 <div className={"flex justify-evenly items-center gap-[10px] w-full"}>
                     <Switch label={"Require Authentication"} state={requireAuth}
                             onChange={() => setRequiredAuth(!requireAuth)}/>
-                    <Switch label={"Something else"} state={somethingElse}
-                            onChange={() => setSomethingElse(!somethingElse)}/>
+                    <Switch label={"Disable Redirect Timer"} state={noRedirectTimer}
+                            onChange={() => setNoRedirectTimer(!noRedirectTimer)}/>
                     <Switch label={"Something else"} state={somethingElse}
                             onChange={() => setSomethingElse(!somethingElse)}/>
                 </div>
