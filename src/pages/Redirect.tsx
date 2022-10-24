@@ -9,13 +9,14 @@ function Redirect() {
     // const [uid, setUid] = useState(user?.uid);
     const [path, setPath] = useState<string>();
     const [cancel, setCancelled] = useState<boolean>(false);
+    const [noTimer, setNoTimer] = useState<boolean>(false);
 
     useEffect(() => {
             resolveLink(window.location.pathname).then(setPath);
             if (path !== undefined && !cancel) {
                 const timeout = setTimeout(() => {
                     window.location.href = path;
-                }, 5000);
+                }, noTimer ? 5000:0);
                 return () => clearTimeout(timeout)
             }
         },

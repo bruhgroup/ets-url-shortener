@@ -10,9 +10,17 @@ import {
 } from "firebase/firestore";
 import {LinkData} from "./types";
 
+/**
+ * Writes input to the database
+ *
+ * @param userid    user id
+ * @param url       long url to store
+ * @param surl      Short url, will generate a random one if blank
+ * @param describe  Description of link
+ * @param timer     Redirect timer toggle
+ */
 
-
-export async function write(userid: string | undefined, url: string, surl: string) {
+export async function write(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean) {
     if (!userid) return;
     let result = generateDistinct(5);
     //Legacy: remove later
@@ -23,11 +31,14 @@ export async function write(userid: string | undefined, url: string, surl: strin
     //possible idea, querery , where: surl == surl
     try {
         await setDoc(doc(firestore, 'links', surl),{
-            surl: url
+            surl: url,
+            noTimer: timer
         })
         await setDoc(doc(firestore,`users/${userid}/userLinks`, surl),{
             surl: url,
-            time: serverTimestamp()
+            time: serverTimestamp(),
+            description: describe,
+            noTimer: timer
         });
     } catch (e) {
         console.error("Error adding document: ", e);
@@ -46,13 +57,21 @@ export function generateDistinct(length: number) {
     return result;
 }
 
-//TODO: Legacy I think? remove later
+/**
+ * resolves redirection links
+ * @param key
+ * @return long url given a surl key
+ */
 export async function resolveLink(key: string) {
-    let final;
+    let link;
+    let cancel;
     const d = doc(firestore, 'links', key)
     let want = await getDoc(d)
-    if (want.exists()) final = want.data().surl
-    return final;
+    if (want.exists()) {
+        link = want.data().surl
+        cancel = want.data().noTimer
+    }
+    return link;
 }
 
 export async function resolveUserLinks(userid: string | undefined, snapshot?: QuerySnapshot<DocumentData>): Promise<LinkData[]> {
@@ -74,9 +93,15 @@ async function resolveSnapshotUserLinks(snapshot: QuerySnapshot) {
     return data;
 }
 
+/**
+ * deletes both documents containing the data related to the surl
+ * @param userid
+ * @param surl
+ */
 export async function removeData(userid: string | undefined, surl: string) {
     const userPath = doc(firestore, `/users/${userid}/userLinks`, surl)
     const linkPath = doc(firestore, 'links', surl)
     await deleteDoc(userPath);
     await deleteDoc(linkPath);
 }
+//TODO: update data
