@@ -16,7 +16,7 @@ function Redirect() {
             if (path !== undefined && !cancel) {
                 const timeout = setTimeout(() => {
                     window.location.href = path;
-                }, noTimer ? 5000:0);
+                }, noTimer ? 5000 : 0);
                 return () => clearTimeout(timeout)
             }
         },
