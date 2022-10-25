@@ -7,9 +7,6 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Home from "./pages/Home";
 import Redirect from "./pages/Redirect";
 import Dashboard from "./pages/Dashboard";
-//TODO:Legacy remove later
-import { getDatabase } from "firebase/database";
-
 
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
@@ -25,8 +22,6 @@ export const firebase = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(firebase);
 export const firestore = getFirestore(firebase);
 export const auth = getAuth(firebase);
-//TODO: Legacy remove later
-export const database = getDatabase(firebase);
 
 
 function App() {

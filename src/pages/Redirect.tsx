@@ -12,11 +12,14 @@ function Redirect() {
     const [noTimer, setNoTimer] = useState<boolean>(false);
 
     useEffect(() => {
-            resolveLink(window.location.pathname).then(setPath,setNoTimer);
+            resolveLink(window.location.pathname).then(({link, cancel}) => {
+                setPath(link);
+                setNoTimer(cancel);
+            });
             if (path !== undefined && !cancel) {
                 const timeout = setTimeout(() => {
                     window.location.href = path;
-                }, noTimer ? 5000 : 0);
+                }, noTimer ? 0 : 5000);
                 return () => clearTimeout(timeout)
             }
         },

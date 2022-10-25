@@ -16,7 +16,7 @@ function Home() {
     }, [user, loading, uid]);
 
     return (
-        <div className={"max-w-screen-2xl mx-auto my-4"}>
+        <div className={"max-w-screen-2xl mx-auto my-auto"}>
             <div className={"flex flex-col justify-center items-center"}>
                 <Authentication className={"flex flex-col space-x-2"}/>
             </div>

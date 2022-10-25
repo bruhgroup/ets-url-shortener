@@ -23,9 +23,6 @@ import {LinkData} from "./types";
 export async function write(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean) {
     if (!userid) return;
     let result = generateDistinct(5);
-    //Legacy: remove later
-    let urlResult = generateDistinct(10);
-    url = url === "" ? urlResult : url;
     surl = surl === "" ? result : surl;
     //TODO: Validate surl, right now it overwrites if same surl
     //Think this works but idk
@@ -62,9 +59,10 @@ export function generateDistinct(length: number) {
 }
 
 /**
- * resolves redirection links
+ * ##resolves redirection links
  * @param key
  * @return long url given a surl key
+ * @return redirect timer state
  */
 export async function resolveLink(key: string) {
     let link;
@@ -75,15 +73,13 @@ export async function resolveLink(key: string) {
         link = want.data().surl
         cancel = want.data().noTimer
     }
-    return link;
+    return {link, cancel};
 }
 
 export async function resolveUserLinks(userid: string | undefined, snapshot?: QuerySnapshot<DocumentData>): Promise<LinkData[]> {
     if (!userid) return [] as LinkData[];
     if (snapshot) return resolveSnapshotUserLinks(snapshot);
-   // const newSnapshot = await get(child(ref(database), `/users/${userid}/links`));
-   // console.log({_msg: "new snapshot", ...newSnapshot});
-    //TODO: make new  snapshot if no snapshot
+    //TODO: make new  snapshot if no snapshot maybe not needed
     return [] as LinkData[];
 }
 
@@ -108,4 +104,7 @@ export async function removeData(userid: string | undefined, surl: string) {
     await deleteDoc(userPath);
     await deleteDoc(linkPath);
 }
-//TODO: update data
+//TODO: update data change stuff when user requests it
+function update(userid: string){
+
+}
