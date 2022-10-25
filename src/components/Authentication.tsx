@@ -107,7 +107,7 @@ function Login({setRegister}: { setRegister: Dispatch<boolean> }) {
                 <span className={"font-medium text-2xl mb-[24px]"}>Authentication</span>
             </div>
             <form
-                className={"flex flex-col gap-4 m-auto w-[22em]"}
+                className={"flex flex-col gap-4 m-auto max-w-full w-[22em]"}
                 onSubmit={() => signInWithEmailAndPassword(email, password)}
             >
                 <label htmlFor={"email"}>Email</label>
