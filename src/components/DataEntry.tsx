@@ -51,7 +51,7 @@ export default function DataEntry({userid}: { userid: string | undefined }) {
             <div className={"flex flex-col items-center gap-[5px] w-full"}>
                 <div className={"flex justify-center items-center gap-[10px] w-full"}>
                     <input
-                        className={"flex-grow-[1] min-w-[20px] rounded p-2 border-2 border-c-gray-300"}
+                        className={"flex-grow min-w-[20px] rounded p-2 border-2 border-c-gray-300"}
                         placeholder={"Add a description (recommended)"}
                         pattern={"[a-zA-Z0-9]+$"}
                         onChange={(e) => setDescription(e.target.value)}

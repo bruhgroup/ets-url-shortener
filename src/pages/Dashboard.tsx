@@ -29,14 +29,13 @@ function Dashboard() {
 
     // TODO: Block completely if UID is not found.
     return (
-        <div className={"bg-c-gray-100 h-full min-h-screen"}>
+        <div className={"bg-c-gray-100 h-screen"}>
             <NavBar/>
-            <div className={"max-w-screen-md mx-auto my-4 p-4 flex flex-col gap-2 bg-white rounded-xl"}>
+            <div className={"max-w-screen-md mx-auto p-4 flex flex-col gap-2 bg-white rounded-xl"}>
                 <DataEntry userid={uid}/>
                 <div className={"flex flex-col items-center justify-center"}>
                     <div className={"flex flex-row"}><p>Test!</p></div>
-                    <div className={"flex flex-row w-full"}>
-                    </div>
+                    <div className={"flex flex-row w-full"}></div>
                 </div>
                  <Table links={resolvedLinks} userid={uid}/>
             </div>

@@ -1,24 +1,30 @@
 import {useAuthState} from "react-firebase-hooks/auth";
 import {useEffect, useState} from "react";
-import Authentication from "../components/Authentication";
 import {auth} from "../App";
+import SiteLogo from "../assets/SiteLogo";
+import Authentication from "../components/Authentication";
 
 function Home() {
     const [user, loading, error] = useAuthState(auth);
-    const [uid, setUid] = useState(user?.uid);
+    const [uid, setUid] = useState<string>();
 
     // Update UID once user logs in.
     useEffect(() => {
-        if (loading) return;
-
-        setUid(user?.uid);
-        // Always calls once on page load and updates the snapshot, so local storage isn't really doing anything..?
+        if (!loading && user) setUid(user.uid);
     }, [user, loading, uid]);
 
     return (
-        <div className={"max-w-screen-2xl mx-auto my-auto"}>
-            <div className={"flex flex-col justify-center items-center"}>
-                <Authentication className={"flex flex-col space-x-2"}/>
+        <div className={"bg-c-gray-100 h-screen"}>
+            <div className={"max-w-screen-md h-full m-auto py-[32px] px-[8px] flex flex-col gap-2"}>
+                <div className={"flex justify-center items-center"}>
+                    <SiteLogo color={"black"}/>
+                </div>
+                <div className={"flex flex-grow justify-center items-center"}>
+                    <Authentication/>
+                </div>
+                <div className={"flex justify-center items-center"}>
+                    <SiteLogo color={"black"}/>
+                </div>
             </div>
         </div>
     );
