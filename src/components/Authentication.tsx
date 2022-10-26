@@ -1,4 +1,4 @@
-import React, {Dispatch, useState} from 'react';
+import React, {Dispatch, useEffect, useState} from 'react';
 import {auth} from "../App";
 import {
     useCreateUserWithEmailAndPassword,
@@ -28,9 +28,10 @@ function Create({setRegister}: { setRegister: Dispatch<boolean> }) {
         error,
     ] = useCreateUserWithEmailAndPassword(auth);
 
-    if (error) {
-        alert(error.message)
-    }
+    useEffect(() => {
+        if (error) alert(error.message)
+    }, [error])
+
     if (user) {
         return <p>User created</p>
     }
@@ -86,9 +87,10 @@ function Login({setRegister}: { setRegister: Dispatch<boolean> }) {
         error,
     ] = useSignInWithEmailAndPassword(auth);
 
-    if (error) {
-        alert(error.message)
-    }
+    useEffect(() => {
+        if (error) alert(error.message)
+    }, [error])
+
     if (user) {
         return <p>User created</p>
     }
