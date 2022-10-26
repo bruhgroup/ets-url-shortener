@@ -6,7 +6,6 @@ import {getAuth} from "firebase/auth";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Home from "./pages/Home";
 import Redirect from "./pages/Redirect";
-import Dashboard from "./pages/Dashboard";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
