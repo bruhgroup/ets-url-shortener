@@ -8,6 +8,7 @@ import {
 import {useState, useMemo} from "react";
 import {LinkData} from "../types";
 import {removeData} from "../Database";
+import SettingIcon from "../assets/SettingIcon";
 
 const columnHelper = createColumnHelper<LinkData>()
 
@@ -17,26 +18,49 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
     const columns = useMemo<ColumnDef<LinkData, any>[]>(
         () => [
             columnHelper.display({
-                id: 'actions',
-                cell: (props) =>
-                    <button className={"bg-red-600 rounded-2xl w-6 h-6 mx-2"}
-                            onClick={() => removeData(userid, `${props.row.getVisibleCells()[1].getValue() ?? ""}`)}/>
+                id: 'setting',
+                cell: props =>
+                    <button
+                        className={"p-4"}
+                        onClick={() => removeData(userid, `${props.row.getVisibleCells()[1].getValue() ?? ""}`)}>
+                        <SettingIcon/>
+                    </button>
             }),
             columnHelper.accessor("short", {
+                header: "Short",
                 cell: info => info.getValue(),
-                header: "Short"
             }),
             columnHelper.accessor("long", {
-                size: 10,
-                cell: (props) => <p
-                className={"truncate w-[32rem]"}
-                >{props.getValue()}</p>,
-                header: "Original"
+                // cell: (props) => <p className={"truncate w-[12em]"}>{props.getValue()}</p>,
+                header: "Original",
+                cell: props => props.getValue(),
             }),
             columnHelper.accessor("desc", {
                 id: 'description',
+                header: "Description",
                 cell: info => info.getValue(),
-                header: "Description"
+            }),
+            columnHelper.display({
+                id: 'qr',
+                header: "QR Code",
+                cell: props =>
+                    <button
+                        className={"p-4"}
+                        onClick={() => {
+                        }}>
+                        COPY
+                    </button>
+            }),
+            columnHelper.display({
+                id: 'copy',
+                header: "URL",
+                cell: props =>
+                    <button
+                        className={"p-4"}
+                        onClick={() => {
+                        }}>
+                        COPY
+                    </button>
             })
         ], [userid])
 
@@ -51,30 +75,20 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
     })
 
     return (
-        <div className="p-2">
-            <table
-            className={"shadow"}>
-                <thead
-                className={"bg-gray-200"}
-                >
+        <div className="overflow-x-auto rounded">
+            <table className={"table-auto shadow w-full"}>
+                <thead className={"bg-gray-200"}>
                 {table.getHeaderGroups().map(headerGroup => (
                     <tr
                         className={""}
                         key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
                             <th key={header.id} colSpan={header.colSpan}
-                            className={
-                                `${(header.id === "actions" ? "rounded-tl-md" : header.id === "description" ? "rounded-tr-md" : "")}
-                                text-left px-2`
-                            }
+                                className={"text-left px-2"}
                             >
                                 {header.isPlaceholder ? null : (
                                     <div
-                                        className={`
-                                            ${header.column.getCanSort()
-                                                ? 'cursor-pointer select-none'
-                                                : ''} my-3`
-                                        }
+                                        className={`my-3 ${header.column.getCanSort() ? 'cursor-pointer select-none' : ''}`}
                                         onClick={header.column.getToggleSortingHandler()}>
                                         {flexRender(
                                             header.column.columnDef.header,
@@ -96,8 +110,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                     <tr key={row.id}
                         className={"odd:bg-white even:bg-gray-100"}>
                         {row.getVisibleCells().map(cell => (
-                            <td key={cell.id}
-                            >
+                            <td key={cell.id}>
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </td>
                         ))}
