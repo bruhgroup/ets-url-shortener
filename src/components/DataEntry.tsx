@@ -53,7 +53,7 @@ export default function DataEntry({userid}: { userid: string | undefined }) {
                     <input
                         className={"flex-grow min-w-[20px] rounded p-2 border-2 border-c-gray-300"}
                         placeholder={"Add a description (recommended)"}
-                        pattern={"[a-zA-Z0-9]+$"}
+                        pattern={"[a-zA-Z0-9 ]+"}
                         onChange={(e) => setDescription(e.target.value)}
                         value={description}
                         type={"text"}

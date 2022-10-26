@@ -87,7 +87,7 @@ async function resolveSnapshotUserLinks(snapshot: QuerySnapshot) {
     let data: LinkData[] = [];
     snapshot.forEach((docs) => {
         let o = docs.data().surl
-        data.push({short: docs.id, long: o.toString()})
+        data.push({short: docs.id, long: o.toString(), desc: docs.data().description})
     });
     console.log(data);
     return data;

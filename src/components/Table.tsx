@@ -27,6 +27,9 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
             }),
             columnHelper.accessor("long", {
                 cell: info => info.getValue(),
+            }),
+            columnHelper.accessor("desc", {
+                cell: info => info.getValue(),
             })
         ], [userid])
 
