@@ -18,7 +18,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
     const columns = useMemo<ColumnDef<LinkData, any>[]>(
         () => [
             columnHelper.display({
-                id: 'setting',
+                id: "settings",
                 cell: props =>
                     <button
                         className={"p-4"}
@@ -31,34 +31,26 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                 cell: info => info.getValue(),
             }),
             columnHelper.accessor("long", {
-                // cell: (props) => <p className={"truncate w-[12em]"}>{props.getValue()}</p>,
                 header: "Original",
-                cell: props => props.getValue(),
+                cell: info => info.getValue(),
             }),
             columnHelper.accessor("desc", {
-                id: 'description',
                 header: "Description",
                 cell: info => info.getValue(),
             }),
             columnHelper.display({
-                id: 'qr',
                 header: "QR Code",
                 cell: props =>
-                    <button
-                        className={"p-4"}
-                        onClick={() => {
-                        }}>
+                    <button className={""} onClick={() => {
+                    }}>
                         COPY
                     </button>
             }),
             columnHelper.display({
-                id: 'copy',
                 header: "URL",
                 cell: props =>
-                    <button
-                        className={"p-4"}
-                        onClick={() => {
-                        }}>
+                    <button className={""} onClick={() => {
+                    }}>
                         COPY
                     </button>
             })
@@ -76,11 +68,10 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
 
     return (
         <div className="overflow-x-auto rounded">
-            <table className={"table-auto shadow w-full"}>
+            <table className={"table-auto min-w-max"}>
                 <thead className={"bg-gray-200"}>
                 {table.getHeaderGroups().map(headerGroup => (
                     <tr
-                        className={""}
                         key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
                             <th key={header.id} colSpan={header.colSpan}
@@ -110,7 +101,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                     <tr key={row.id}
                         className={"odd:bg-white even:bg-gray-100"}>
                         {row.getVisibleCells().map(cell => (
-                            <td key={cell.id}>
+                            <td key={cell.id} className={"text-left px-2"}>
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </td>
                         ))}
