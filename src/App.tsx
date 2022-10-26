@@ -13,7 +13,6 @@ const firebaseConfig = {
     authDomain: "ets-url-shortener.firebaseapp.com",
     projectId: "ets-url-shortener",
     storageBucket: "ets-url-shortener.appspot.com",
-    databaseURL: "https://ets-url-shortener-default-rtdb.firebaseio.com/",
     messagingSenderId: "44963408642",
     appId: "1:44963408642:web:83caa24a0d7c31052b301b",
     measurementId: "G-LKSEDM1380"
@@ -23,13 +22,11 @@ export const analytics = getAnalytics(firebase);
 export const firestore = getFirestore(firebase);
 export const auth = getAuth(firebase);
 
-
 function App() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route index element={<Home/>}/>
-                <Route path={"/dashboard"} element={<Dashboard/>}/>
                 <Route path={"/*"} element={<Redirect/>}/>
             </Routes>
         </BrowserRouter>

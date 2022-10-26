@@ -9,18 +9,7 @@ import {signOut} from "firebase/auth";
 import {Navigate} from "react-router-dom";
 
 export default function Authentication() {
-    const [user, loading, error] = useAuthState(auth);
     const [register, setRegister] = useState<boolean>(false);
-
-    if (error) {
-        return <p>Error: {error.message}</p>;
-    }
-    if (loading) {
-        return <p>loading auth state...</p>;
-    }
-    if (user) {
-        return (<Navigate to="/dashboard"/>)
-    }
 
     // TODO: Move these into components
     return (
