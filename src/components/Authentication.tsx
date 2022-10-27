@@ -2,10 +2,17 @@ import React, {Dispatch, useEffect, useState} from 'react';
 import {auth} from "../App";
 import {
     useCreateUserWithEmailAndPassword,
-    useSignInWithEmailAndPassword
+    useSignInWithEmailAndPassword,
 } from "react-firebase-hooks/auth";
-import {signOut} from "firebase/auth";
+import {signOut, sendSignInLinkToEmail} from "firebase/auth";
 import LoadingIcon from "../assets/LoadingIcon";
+
+const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for this
+    // URL must be in the authorized domains list in the Firebase Console.
+    url: 'http://localhost:3000/',
+    handleCodeInApp: true,
+};
 
 export default function Authentication() {
     const [register, setRegister] = useState<boolean>(false);
@@ -104,7 +111,8 @@ function Login({setRegister}: { setRegister: Dispatch<boolean> }) {
                 className={"flex flex-col gap-4 m-auto max-w-full w-[22em]"}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    signInWithEmailAndPassword(email, password)
+                    sendLink(email, actionCodeSettings)
+                    //signInWithEmailAndPassword(email, password)
                 }}
             >
                 <label htmlFor={"email"}>Email</label>
@@ -138,4 +146,9 @@ function Login({setRegister}: { setRegister: Dispatch<boolean> }) {
 
 export function Logout() {
     return (<button className={"items-center text-white text-xl "} onClick={() => signOut(auth)}>Logout</button>)
+}
+
+function sendLink(email: string, actionCodeSettings: { url: string, handleCodeInApp: boolean }) {
+    sendSignInLinkToEmail(auth, email, actionCodeSettings)
+        .then(() => window.localStorage.setItem('emailForSignIn', email))
 }
