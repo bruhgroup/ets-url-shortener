@@ -29,33 +29,35 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
             }),
             columnHelper.accessor("short", {
                 header: "Short",
-                size: 100,
-                cell: info => <span className={"max-w-[100px]"}>{info.getValue()}</span>,
+                size: 98,
+                cell: info => <span className={"max-w-[98]"}>{info.getValue()}</span>,
             }),
             columnHelper.accessor("long", {
                 header: "Original",
+                id: "long",
                 size: 150,
                 cell: info => <span className={"max-w-[150px]"}>{info.getValue()}</span>,
             }),
             columnHelper.accessor("desc", {
                 header: "Description",
-                size: 250,
-                cell: info => <span className={"max-w-[250px]"}>{info.getValue()}</span>,
+                id: "desc",
+                size: 218,
+                cell: info => <span className={"max-w-[218px]"}>{info.getValue()}</span>,
             }),
             columnHelper.display({
                 header: "QR Code",
-                size: 100,
+                size: 98,
                 cell: props =>
-                    <button className={"max-w-[100px] w-[100px]"} onClick={() => {
+                    <button className={"max-w-[98px] w-[98px]"} onClick={() => {
                     }}>
                         COPY
                     </button>
             }),
             columnHelper.display({
                 header: "URL",
-                size: 100,
+                size: 98,
                 cell: props =>
-                    <button className={"max-w-[100px] w-[100px]"} onClick={() => {
+                    <button className={"max-w-[98px] w-[98px]"} onClick={() => {
                     }}>
                         COPY
                     </button>
@@ -72,7 +74,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
     })
 
     return (
-        <div className="overflow-x-scroll rounded hide-scrollbar">
+        <div className="overflow-x-scroll rounded hide-scrollbar w-[101%]">
             <table className={"min-w-max"}>
                 <thead className={"bg-gray-200"}>
                 {table.getHeaderGroups().map(headerGroup => (
@@ -80,10 +82,10 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                         key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
                             <th key={header.id} colSpan={header.colSpan}
-                                className={"text-left px-2"}>
+                                className={"text-left"}>
                                 {header.isPlaceholder ? null : (
                                     <div
-                                        className={`my-3 ${header.column.getCanSort() ? "cursor-pointer select-none" : ""}`}
+                                        className={`my-3 ${header.column.getCanSort() ? "cursor-pointer select-none" : ""} w-[${header.getSize()}px]`}
                                         onClick={header.column.getToggleSortingHandler()}>
                                         {flexRender(
                                             header.column.columnDef.header,
@@ -106,7 +108,9 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                         className={"odd:bg-white even:bg-gray-100"}>
                         {row.getVisibleCells().map(cell => (
                             <td key={cell.id}
-                                className={`text-left px-2 overflow-hidden overflow-x-scroll hide-scrollbar max-w-[${cell.column.getSize()}px]`}>
+                                className={`text-left px-2
+                                ${(cell.column.id === "desc" || cell.column.id === "long") ? "overflow-hidden overflow-x-scroll hide-scrollbar" : ""}
+                                 max-w-[${cell.column.getSize()}px]`}>
                                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
                             </td>
                         ))}
