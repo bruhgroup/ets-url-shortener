@@ -6,7 +6,8 @@ import {
     QuerySnapshot,
     DocumentData,
     deleteDoc,
-    getDoc
+    getDoc,
+    updateDoc
 } from "firebase/firestore";
 import {LinkData} from "./types";
 
@@ -105,6 +106,11 @@ export async function removeData(userid: string | undefined, surl: string) {
     await deleteDoc(linkPath);
 }
 //TODO: update data change stuff when user requests it
-function update(userid: string){
-
+export async function update(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean){
+    await updateDoc(doc(firestore, `/users/${userid}/userlinks`, surl), {
+            surl: url,
+            time: serverTimestamp(),
+            description: describe,
+            noTimer: timer
+    });
 }
