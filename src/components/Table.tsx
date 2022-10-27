@@ -8,6 +8,9 @@ import {
 import {useState, useMemo} from "react";
 import {LinkData} from "../types";
 import MenuPopup from "./MenuPopup";
+import {ToastContainer, toast, useToast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import CopyNotification from "./CopyNotification";
 
 const columnHelper = createColumnHelper<LinkData>()
 
@@ -51,8 +54,12 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                 header: "URL",
                 size: 98,
                 cell: props =>
-                    <button className={"max-w-[98px] w-[98px]"} onClick={() => {
-                    }}>
+                    <button className={"max-w-[98px] w-[98px]"}
+                            onClick={() => { navigator.clipboard.writeText(`${props.row.getVisibleCells()[2].getValue()}`).then(
+                                () => { console.log("copied notification here")
+                                }
+                            )}}
+                    >
                         COPY
                     </button>
             })
