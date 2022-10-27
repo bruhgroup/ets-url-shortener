@@ -7,8 +7,7 @@ import {
 } from "@tanstack/react-table";
 import {useState, useMemo} from "react";
 import {LinkData} from "../types";
-import {removeData} from "../Database";
-import SettingIcon from "../assets/SettingIcon";
+import MenuPopup from "./MenuPopup";
 
 const columnHelper = createColumnHelper<LinkData>()
 
@@ -20,12 +19,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
             columnHelper.display({
                 id: "settings",
                 size: 50,
-                cell: props =>
-                    <button
-                        className={"p-4"}
-                        onClick={() => removeData(userid, `${props.row.getVisibleCells()[1].getValue() ?? ""}`)}>
-                        <SettingIcon/>
-                    </button>
+                cell: props => <MenuPopup userid={userid} element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}></MenuPopup>
             }),
             columnHelper.accessor("short", {
                 header: "Short",
@@ -50,7 +44,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                 cell: props =>
                     <button className={"max-w-[98px] w-[98px]"} onClick={() => {
                     }}>
-                        COPY
+                        OPEN
                     </button>
             }),
             columnHelper.display({
@@ -92,8 +86,8 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                                             header.getContext()
                                         )}
                                         {{
-                                            asc: '⬆️',
-                                            desc: '👎',
+                                            asc: '⬆',
+                                            desc: '⬇',
                                         }[header.column.getIsSorted() as string] ?? null}
                                     </div>
                                 )}
