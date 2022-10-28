@@ -8,6 +8,7 @@ import {
 import {useState, useMemo} from "react";
 import {LinkData} from "../types";
 import MenuPopup from "./MenuPopup";
+import {toast} from "react-toastify";
 
 const columnHelper = createColumnHelper<LinkData>()
 
@@ -19,7 +20,8 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
             columnHelper.display({
                 id: "settings",
                 size: 50,
-                cell: props => <MenuPopup userid={userid} element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}/>
+                cell: props => <MenuPopup userid={userid}
+                                          element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}/>
             }),
             columnHelper.accessor("short", {
                 header: "Short",
@@ -42,20 +44,18 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                 header: "QR Code",
                 size: 98,
                 cell: props =>
-                    <button className={"max-w-[98px] w-[98px]"} onClick={() => {
-                    }}>
-                        OPEN
-                    </button>
+                    <button className={"max-w-[98px] w-[98px]"} onClick={() => {}}>OPEN</button>
             }),
             columnHelper.display({
                 header: "URL",
                 size: 98,
                 cell: props =>
                     <button className={"max-w-[98px] w-[98px]"}
-                            onClick={() => { navigator.clipboard.writeText(`${props.row.getVisibleCells()[2].getValue()}`).then(
-                                () => { console.log("copied notification here")
-                                }
-                            )}}
+                            onClick={() => {
+                                navigator.clipboard.writeText(`${props.row.getVisibleCells()[2].getValue()}`)
+                                    .then(() => toast.success("Link was copied from to your clipboard!"))
+                                    .catch(() => toast.error("An error occurred while attempting to copy link."))
+                            }}
                     >
                         COPY
                     </button>
@@ -70,8 +70,8 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel()
     })
-    if(links.length === 0){
-        return<p className={"text-center"}>No links, fill out the form to get started!</p>
+    if (links.length === 0) {
+        return <p className={"text-center"}>No links, fill out the form to get started!</p>
     }
 
     return (

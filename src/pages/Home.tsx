@@ -54,7 +54,7 @@ function Home() {
                         </div>
                     </div>
                 }
-                <ToastContainer position="bottom-right" limit={3} theme="colored"/>
+                <ToastContainer position="bottom-center" limit={3} theme="colored"/>
             </>
         );
     }

@@ -27,7 +27,10 @@ export default function Authentication() {
 
                         setLoading(true);
                         sendSignInLinkToEmail(auth, email, actionCodeSettings)
-                            .then(() => window.localStorage.setItem('emailForSignIn', email))
+                            .then(() => {
+                                window.localStorage.setItem('emailForSignIn', email)
+                                toast.info("Check your email for a sign-in link!")
+                            })
                             .catch(() => {
                                 setLoading(false);
                                 toast.error("An error occurred while sending sign-in email.")
