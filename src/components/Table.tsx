@@ -52,7 +52,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                 cell: props =>
                     <button className={"max-w-[98px] w-[98px]"}
                             onClick={() => {
-                                navigator.clipboard.writeText(`${props.row.getVisibleCells()[2].getValue()}`)
+                                navigator.clipboard.writeText(`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`)
                                     .then(() => toast.success("Link was copied from to your clipboard!"))
                                     .catch(() => toast.error("An error occurred while attempting to copy link."))
                             }}

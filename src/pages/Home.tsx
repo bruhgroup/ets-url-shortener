@@ -35,31 +35,31 @@ function Home() {
         }
     }, [loading, navigate, user])
 
-    if (!loading) {
-        return (
+    if (loading) return <></>
+
+    return (
+        user ?
             <>
-                {user ?
-                    <Dashboard/> :
-                    <div className={"bg-c-gray-100 h-screen"}>
-                        <div className={"max-w-screen-md h-full m-auto py-[32px] px-[8px] flex flex-col gap-2"}>
-                            <div className={"flex justify-center items-center"}>
-                                <SiteLogo color={"black"}/>
-                            </div>
-                            <div className={"flex flex-grow justify-center items-center"}>
-                                <Authentication/>
-                            </div>
-                            <div className={"flex justify-center items-center"}>
-                                <SiteLogo color={"black"}/>
-                            </div>
+                <Dashboard/>
+                <ToastContainer position="bottom-left" limit={3} theme="colored"/>
+            </> :
+            <>
+                <div className={"bg-c-gray-100 h-screen"}>
+                    <div className={"max-w-screen-md h-full m-auto py-[32px] px-[8px] flex flex-col gap-2"}>
+                        <div className={"flex justify-center items-center"}>
+                            <SiteLogo color={"black"}/>
+                        </div>
+                        <div className={"flex flex-grow justify-center items-center"}>
+                            <Authentication/>
+                        </div>
+                        <div className={"flex justify-center items-center"}>
+                            <SiteLogo color={"black"}/>
                         </div>
                     </div>
-                }
+                </div>
                 <ToastContainer position="bottom-center" limit={3} theme="colored"/>
             </>
-        );
-    }
-
-    return <></>
+    );
 }
 
 export default Home;
