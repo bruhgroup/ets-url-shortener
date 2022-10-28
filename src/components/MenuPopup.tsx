@@ -10,13 +10,13 @@ export default function MenuPopup({userid, element}: {userid: string | undefined
                 <button className="p-4"><SettingIcon/></button>
             )}
             offsetX={-20}
-            arrowStyle={{color: "rgb(229 231 235)", border: "1px"}}
+            arrowStyle={{ color: "rgb(150,150,150)" }}
             contentStyle={{}}
-            arrow={true}
+            arrow={false}
             position="left top"
             closeOnDocumentClick>
         <span
-            className={"bg-gray-200 rounded p-2 flex flex-col shadow "}>
+            className={"bg-white rounded p-2 flex flex-col shadow "}>
             <button
                 onClick={() => console.log("edited")}>Edit
                 <hr className={"border-gray-300"}/>

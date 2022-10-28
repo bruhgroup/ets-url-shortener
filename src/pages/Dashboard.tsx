@@ -33,7 +33,6 @@ function Dashboard() {
             <div className={"max-w-screen-md mx-auto p-4 flex flex-col gap-2 bg-white rounded-b-lg"}>
                 <DataEntry userid={uid}/>
                 <div className={"flex flex-col items-center justify-center"}>
-                    <div className={"flex flex-row"}><p>Test!</p></div>
                     <div className={"flex flex-row w-full"}></div>
                 </div>
                  <Table links={resolvedLinks} userid={uid}/>

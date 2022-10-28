@@ -8,9 +8,6 @@ import {
 import {useState, useMemo} from "react";
 import {LinkData} from "../types";
 import MenuPopup from "./MenuPopup";
-import {ToastContainer, toast, useToast} from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import CopyNotification from "./CopyNotification";
 
 const columnHelper = createColumnHelper<LinkData>()
 
@@ -22,24 +19,24 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
             columnHelper.display({
                 id: "settings",
                 size: 50,
-                cell: props => <MenuPopup userid={userid} element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}></MenuPopup>
+                cell: props => <MenuPopup userid={userid} element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}/>
             }),
             columnHelper.accessor("short", {
                 header: "Short",
                 size: 98,
-                cell: info => <span className={"max-w-[98]"}>{info.getValue()}</span>,
+                cell: info => <span className={"max-w-[98] w-[98px]"}>{info.getValue()}</span>,
             }),
             columnHelper.accessor("long", {
                 header: "Original",
                 id: "long",
                 size: 150,
-                cell: info => <span className={"max-w-[150px]"}>{info.getValue()}</span>,
+                cell: info => <span className={"max-w-[150px] w-[150px]"}>{info.getValue()}</span>,
             }),
             columnHelper.accessor("desc", {
                 header: "Description",
                 id: "desc",
                 size: 218,
-                cell: info => <span className={"max-w-[218px]"}>{info.getValue()}</span>,
+                cell: info => <span className={"max-w-[218px] w-[218px]"}>{info.getValue()}</span>,
             }),
             columnHelper.display({
                 header: "QR Code",
@@ -73,6 +70,9 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel()
     })
+    if(links.length === 0){
+        return<p className={"text-center"}>No links, fill out the form to get started!</p>
+    }
 
     return (
         <div className="overflow-x-scroll rounded hide-scrollbar w-[101%]">
@@ -121,4 +121,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
             </table>
         </div>
     )
+
+
 }
+
