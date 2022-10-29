@@ -11,7 +11,7 @@ import Landing from "../components/Landing";
 import 'react-toastify/dist/ReactToastify.min.css';
 
 function Home() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     const navigate = useNavigate();
     const [signIn, setSignIn] = useState<boolean>(false)
 
