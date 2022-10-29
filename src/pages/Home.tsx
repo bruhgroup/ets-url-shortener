@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 
 import 'react-toastify/dist/ReactToastify.min.css';
+import Landing from "../components/Landing";
 
 function Home() {
     const [user, loading, error] = useAuthState(auth);
@@ -26,6 +27,7 @@ function Home() {
                 .then((result) => {
                     // Clear email from storage.
                     window.localStorage.removeItem('emailForSignIn');
+                    // Hacky: create a fake window so that we're able to close the tab.
                     window.open("about:blank", "_self");
                     window.close();
                 })
@@ -44,19 +46,9 @@ function Home() {
                 <ToastContainer position="bottom-left" limit={3} theme="colored"/>
             </> :
             <>
-                <div className={"bg-c-gray-100 h-screen"}>
-                    <div className={"max-w-screen-md h-full m-auto py-[32px] px-[8px] flex flex-col gap-2"}>
-                        <div className={"flex justify-center items-center"}>
-                            <SiteLogo color={"black"}/>
-                        </div>
-                        <div className={"flex flex-grow justify-center items-center"}>
-                            <Authentication/>
-                        </div>
-                        <div className={"flex justify-center items-center"}>
-                            <SiteLogo color={"black"}/>
-                        </div>
-                    </div>
-                </div>
+                <Landing>
+                    <Authentication/>
+                </Landing>
                 <ToastContainer position="bottom-center" limit={3} theme="colored"/>
             </>
     );
