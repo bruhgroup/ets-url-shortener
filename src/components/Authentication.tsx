@@ -15,7 +15,7 @@ export default function Authentication() {
 
     return (
         <>
-            <div className={"flex justify-center"}>
+            <div className={"flex justify-center text-center"}>
                 <span className={"font-medium text-2xl mb-[24px]"}>Authentication</span>
             </div>
             <form
@@ -48,7 +48,7 @@ export default function Authentication() {
                 <button
                     className={"max-h-[45px] rounded px-[16px] py-[8px] bg-blue-500 font-medium w-full text-center text-white"}
                     type={"submit"} disabled={loading}>
-                    {loading ? <LoadingIcon/> : "Login"}
+                    {loading ? <LoadingIcon fill={"white"}/> : "Login"}
                 </button>
             </form>
         </>
