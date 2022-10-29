@@ -12,7 +12,7 @@ import {toast} from "react-toastify";
 
 const columnHelper = createColumnHelper<LinkData>()
 
-export default function Table({links, userid}: { links: LinkData[], userid: string | undefined }) {
+export default function Table({links, userid, setEditing}: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>}) {
     const [sorting, setSorting] = useState<SortingState>([])
 
     const columns = useMemo<ColumnDef<LinkData, any>[]>(
@@ -21,7 +21,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                 id: "settings",
                 size: 50,
                 cell: props => <MenuPopup userid={userid}
-                                          element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}/>
+                                          element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`} setEditing = {setEditing}/>
             }),
             columnHelper.accessor("short", {
                 header: "Short",
@@ -60,7 +60,7 @@ export default function Table({links, userid}: { links: LinkData[], userid: stri
                         COPY
                     </button>
             })
-        ], [userid])
+        ], [userid, setEditing])
 
     const table = useReactTable({
         data: links,

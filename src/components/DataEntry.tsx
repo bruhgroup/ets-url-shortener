@@ -1,28 +1,36 @@
 import ArrowIcon from "../assets/ArrowIcon";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Switch from "./Switch";
-import {generateDistinct, write} from "../Database";
+import {generateDistinct, update, write} from "../Database";
 
-export default function DataEntry({userid}: { userid: string | undefined }) {
+export default function DataEntry({userid, editState}: { userid: string | undefined, editState: boolean }) {
+    const [editing, setEditing] = useState<boolean>(editState);
     const [link, setLink] = useState<string>("");
     const [customLink, setCustomLink] = useState<string>(generateDistinct(5));
     const [description, setDescription] = useState<string>("");
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
     const [noRedirectTimer, setNoRedirectTimer] = useState<boolean>(false);
     const [somethingElse, setSomethingElse] = useState<boolean>(false);
+    //TODO: fix cancel button
+    useEffect(() => {
+        console.log('a')
+        setEditing(editState)
+    }, [editState, editing])
 
     return (
         <form
             className={"flex flex-col justify-center items-center px-[8px] py-[12px] gap-[12px] bg-c-gray-100 rounded"}
             onSubmit={(e) => {
                 e.preventDefault();
-                write(userid, link, customLink,description,noRedirectTimer);
+                editing ? update(undefined, "", "", "", false) : write(userid, link, customLink, description, noRedirectTimer);
                 console.log({_msg:"link created", link, customLink, description})
                 setLink("");
                 setCustomLink(generateDistinct(5));
                 setDescription("");
             }}
             id={"urls"}>
+
+            {editing ? <span> IS EDITING RN</span> : <> NOT EDITING</>}
 
             <div className={"flex flex-row justify-center items-center gap-[20px] w-full"}>
                 <input
@@ -59,9 +67,15 @@ export default function DataEntry({userid}: { userid: string | undefined }) {
                         type={"text"}
                     />
                     <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-black font-medium"}>
-                        <button className={"text-white"} type={"submit"}>Create Short URL</button>
+                        <button className={"text-white"} type={"submit"}>{editing ? "Submit edit" :"Create Short URL"}</button>
                     </div>
+
                 </div>
+                {editing ? <button className={"text-white"} onClick={(e) => {
+                    e.preventDefault()
+                    setEditing( () =>  false)
+                }}>Cancel</button> : <></>}
+
                 <div className={"flex justify-evenly items-center gap-[10px] w-full"}>
                     <Switch label={"Require Authentication"} state={requireAuth}
                             onChange={() => setRequiredAuth(!requireAuth)}/>

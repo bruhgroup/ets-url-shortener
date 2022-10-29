@@ -2,7 +2,7 @@ import Popup from "reactjs-popup";
 import SettingIcon from "../assets/SettingIcon";
 import {removeData} from "../Database";
 
-export default function MenuPopup({userid, element}: {userid: string | undefined, element: string}){
+export default function MenuPopup({userid, element, setEditing}: {userid: string | undefined, element: string, setEditing: React.Dispatch<React.SetStateAction<boolean>>}){
 
     return (
         <Popup
@@ -15,10 +15,11 @@ export default function MenuPopup({userid, element}: {userid: string | undefined
             arrow={false}
             position="left top"
             closeOnDocumentClick>
-        <span
+
+            <span
             className={"bg-white rounded p-2 flex flex-col shadow "}>
             <button
-                onClick={() => console.log("edited")}>Edit
+                onClick={() => setEditing(true)}>Edit
                 <hr className={"border-gray-300"}/>
             </button>
             <button

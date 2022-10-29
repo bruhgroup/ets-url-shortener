@@ -1,6 +1,6 @@
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth, firestore} from "../App";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkData} from "../types";
 import {resolveUserLinks} from "../Database";
@@ -12,6 +12,7 @@ import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
 function Dashboard() {
     const [user, loading] = useAuthState(auth);
     const [uid, setUid] = useState(user?.uid);
+    const [editing, setEditing] = useState(false);
     const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []})
 
     // Update UID once user logs in.
@@ -27,18 +28,20 @@ function Dashboard() {
         });
     }, [user, loading, uid, setResolvedLinks, resolvedLinks]);
 
+
     return (
         <div className={"bg-c-gray-100 h-screen"}>
             <NavBar/>
             <div className={"max-w-screen-md mx-auto p-4 flex flex-col gap-2 bg-white rounded-b-lg"}>
-                <DataEntry userid={uid}/>
+                <DataEntry userid={uid} editState={editing}/>
                 <div className={"flex flex-col items-center justify-center"}>
-                    <div className={"flex flex-row w-full"}></div>
+                    <div className={"flex flex-row w-full"}>
+                        <button onClick={() => setEditing(false)}>Stop editing</button>
+                    </div>
                 </div>
-                 <Table links={resolvedLinks} userid={uid}/>
+                 <Table links={resolvedLinks} userid={uid} setEditing={setEditing}/>
             </div>
         </div>
     )
 }
-
 export default Dashboard;
