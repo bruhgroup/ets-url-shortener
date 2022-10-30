@@ -107,7 +107,7 @@ export async function removeData(userid: string | undefined, surl: string) {
 }
 //TODO: update data change stuff when user requests it
 export async function update(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean){
-    await updateDoc(doc(firestore, `/users/${userid}/userlinks`, surl), {
+    await updateDoc(doc(firestore, `/users/${userid}/userLinks`, surl), {
             surl: url,
             time: serverTimestamp(),
             description: describe,

@@ -5,15 +5,20 @@ import {
     getSortedRowModel, SortingState,
     useReactTable
 } from "@tanstack/react-table";
-import {useState, useMemo} from "react";
+import React, {useState, useMemo, useEffect} from "react";
 import {LinkData} from "../types";
 import MenuPopup from "./MenuPopup";
 import {toast} from "react-toastify";
 
 const columnHelper = createColumnHelper<LinkData>()
 
-export default function Table({links, userid, setEditing}: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>}) {
-    const [sorting, setSorting] = useState<SortingState>([])
+export default function Table({links, userid, setEditing, entry}: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>, entry: any}) {
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [editIndex, setEditIndex] = useState<number>(-1);
+
+    useEffect(() =>{
+        entry(links[editIndex])
+    })
 
     const columns = useMemo<ColumnDef<LinkData, any>[]>(
         () => [
@@ -21,7 +26,7 @@ export default function Table({links, userid, setEditing}: { links: LinkData[], 
                 id: "settings",
                 size: 50,
                 cell: props => <MenuPopup userid={userid}
-                                          element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`} setEditing = {setEditing}/>
+                                          element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`} setEditing = {setEditing} setEditIndex={setEditIndex} index={props.row.index}/>
             }),
             columnHelper.accessor("short", {
                 header: "Short",
@@ -70,6 +75,7 @@ export default function Table({links, userid, setEditing}: { links: LinkData[], 
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel()
     })
+
     if (links.length === 0) {
         return <p className={"text-center"}>No links, fill out the form to get started!</p>
     }

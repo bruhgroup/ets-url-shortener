@@ -1,8 +1,9 @@
 import Popup from "reactjs-popup";
 import SettingIcon from "../assets/SettingIcon";
 import {removeData} from "../Database";
+import React from "react";
 
-export default function MenuPopup({userid, element, setEditing}: {userid: string | undefined, element: string, setEditing: React.Dispatch<React.SetStateAction<boolean>>}){
+export default function MenuPopup({userid, element, setEditing, setEditIndex,index}: {userid: string | undefined, element: string, setEditing: React.Dispatch<React.SetStateAction<boolean>>, setEditIndex: any, index:number}){
 
     return (
         <Popup
@@ -19,7 +20,10 @@ export default function MenuPopup({userid, element, setEditing}: {userid: string
             <span
             className={"bg-white rounded p-2 flex flex-col shadow "}>
             <button
-                onClick={() => setEditing(true)}>Edit
+                onClick={() => {
+                    setEditing(true)
+                    setEditIndex(index)
+                }}>Edit
                 <hr className={"border-gray-300"}/>
             </button>
             <button
