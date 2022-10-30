@@ -1,12 +1,9 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import {getAnalytics} from "firebase/analytics";
 import {getAuth} from "firebase/auth";
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import Home from "./pages/Home";
-import Redirect from "./pages/Redirect";
-
 const firebaseConfig = {
     apiKey: "AIzaSyBmSG0ulPPy-A2SgAELbwF-f467doKJiw4",
     authDomain: "ets-url-shortener.firebaseapp.com",
@@ -21,13 +18,18 @@ export const analytics = getAnalytics(firebase);
 export const firestore = getFirestore(firebase);
 export const auth = getAuth(firebase);
 
+const Home = lazy(() => import("./pages/Home"));
+const Redirect = lazy(() => import("./pages/Redirect"));
+
 function App() {
     return (
         <BrowserRouter>
-            <Routes>
-                <Route index element={<Home/>}/>
-                <Route path={"/*"} element={<Redirect/>}/>
-            </Routes>
+            <Suspense fallback={<div>Loading...</div>}>
+                <Routes>
+                    <Route index element={<Home/>}/>
+                    <Route path={"/*"} element={<Redirect/>}/>
+                </Routes>
+            </Suspense>
         </BrowserRouter>
     );
 }
