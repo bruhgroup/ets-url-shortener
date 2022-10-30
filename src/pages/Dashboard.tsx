@@ -1,6 +1,6 @@
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth, firestore} from "../App";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkData} from "../types";
 import {resolveUserLinks} from "../Database";
@@ -14,20 +14,30 @@ function Dashboard() {
     const [uid, setUid] = useState(user?.uid);
     const [editing, setEditing] = useState(false);
     const [entry, setEntry] = useState<LinkData>(Object);
-    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []})
+    const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []});
+    const memoedResolve = useCallback(
+        (linksArr:LinkData[])=> {
+            setResolvedLinks(linksArr);
+    }, [setResolvedLinks])
 
     // Update UID once user logs in.
-    useEffect(() => {
+    useEffect( () => {
+        console.log("use effect")
         if (loading) return;
-
         setUid(user?.uid);
+    }, [loading, user?.uid]);
+    
+    //attaches listener
+    useEffect(()=> {
         // Always calls once on page load and updates the snapshot, so local storage isn't really doing anything..?
+        console.log("this one ran")
         const q = query(collection(firestore,`/users/${uid}/userLinks`), orderBy("surl", "asc"))
-        return onSnapshot(q, async (querySnapshot) => {
-            setResolvedLinks(await resolveUserLinks(uid, querySnapshot));
-            console.log("resolve links " + resolvedLinks)
+        const unsub = onSnapshot(q,   async (querySnapshot) => {
+            memoedResolve(await resolveUserLinks(uid, querySnapshot));
+            console.log("resolved links")
         });
-    }, [user, loading, uid, setResolvedLinks]);
+        return () => unsub();
+        },[memoedResolve, uid])
 
     const editEntry = (entries: LinkData) => {
         setEntry(entries);

@@ -14,7 +14,6 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
     const [somethingElse, setSomethingElse] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log(editState)
         setEditing(editState)
     }, [editState])
 

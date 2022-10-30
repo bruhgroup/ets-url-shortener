@@ -80,7 +80,7 @@ export async function resolveLink(key: string) {
 
 export async function resolveUserLinks(userid: string | undefined, snapshot?: QuerySnapshot<DocumentData>): Promise<LinkData[]> {
     if (!userid) return [] as LinkData[];
-    if (snapshot) return resolveSnapshotUserLinks(snapshot);
+    if (snapshot) return await resolveSnapshotUserLinks(snapshot);
     //TODO: make new  snapshot if no snapshot maybe not needed
     return [] as LinkData[];
 }
@@ -88,8 +88,7 @@ export async function resolveUserLinks(userid: string | undefined, snapshot?: Qu
 async function resolveSnapshotUserLinks(snapshot: QuerySnapshot) {
     let data: LinkData[] = [];
     snapshot.forEach((docs) => {
-        let o = docs.data().surl
-        data.push({short: docs.id, long: o.toString(), desc: docs.data().description})
+        data.push({short: docs.id, long: docs.data().surl, desc: docs.data().description})
     });
     console.log(data);
     return data;
