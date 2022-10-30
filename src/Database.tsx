@@ -32,16 +32,17 @@ export async function write(userid: string | undefined, url: string, surl: strin
         return false;
     }
     try {
-        await setDoc(doc(firestore, 'links', surl),{
-            surl: url,
-            noTimer: timer
-        })
+        // Must create user's links first before attempting to create /links
         await setDoc(doc(firestore,`users/${userid}/userLinks`, surl),{
             surl: url,
             time: serverTimestamp(),
             description: describe,
             noTimer: timer
         });
+        await setDoc(doc(firestore, 'links', surl),{
+            surl: url,
+            noTimer: timer
+        })
     } catch (e) {
         console.error("Error adding document: ", e);
     }
