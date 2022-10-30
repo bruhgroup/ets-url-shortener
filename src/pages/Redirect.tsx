@@ -14,12 +14,16 @@ function Redirect() {
     const [timing, setTiming] = useState<number>(5)
 
     useEffect(() => {
-            resolveLink(window.location.pathname)
-                .then(({link, cancel}) => {
-                    setPath(link);
-                    setNoTimer(cancel);
-                    setLoading(false);
-                });
+        // Only render once and never again.
+        resolveLink(window.location.pathname)
+            .then(({link, cancel}) => {
+                setPath(link);
+                setNoTimer(cancel);
+                setLoading(false);
+            });
+    })
+
+    useEffect(() => {
             if (path && !cancel) {
                 if (noTimer) window.location.href = path;
                 const interval = setInterval(() => {
