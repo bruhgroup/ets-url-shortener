@@ -21,7 +21,7 @@ function Redirect() {
                 setNoTimer(cancel);
                 setLoading(false);
             });
-    })
+    }, [])
 
     useEffect(() => {
             if (path && !cancel) {
