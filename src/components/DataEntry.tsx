@@ -29,7 +29,7 @@ export default function DataEntry({
                     setSuccess(await write(userid, link, customLink, description, redirectTimer));
                 success ?
                     toast.success(`Short URL was ${editState ? "edited" : "created"}!`) :
-                    toast.error("Short URl already exists!");
+                    toast.error("Short URL already exists!");
                 setLink("");
                 setCustomLink(generateDistinct(5));
                 setDescription("");
@@ -44,7 +44,7 @@ export default function DataEntry({
                     className={"flex rounded w-[50%] p-2 min-w-[20px] border-2 border-c-gray-300"}
                     placeholder={"Your URL to shorten"}
                     onChange={(e) => setLink(e.target.value)}
-                    value={link}
+                    value={editState ? editEntry?.long : link}
                     type={"url"}
                 />
                 <ArrowIcon/>
@@ -58,7 +58,7 @@ export default function DataEntry({
                         pattern={"[a-zA-Z0-9]+$"}
                         disabled={editState}
                         onChange={(e) => setCustomLink(e.target.value)}
-                        value={editState ? editEntry.short : customLink}
+                        value={editState ? editEntry?.short : customLink}
                         type={"text"}
                     />
                 </div>
@@ -71,7 +71,7 @@ export default function DataEntry({
                         placeholder={"Add a description (recommended)"}
                         pattern={"[a-zA-Z0-9 ]+"}
                         onChange={(e) => setDescription(e.target.value)}
-                        value={description}
+                        value={editState ? editEntry?.desc : description}
                         type={"text"}
                     />
                     <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-black font-medium"}>

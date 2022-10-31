@@ -10,14 +10,13 @@ export default function MenuPopup({
                                       element,
                                       setEditing,
                                       setEditIndex,
+                                      editing,
                                       index
-                                  }: { userid: string | undefined, element: string, setEditing: React.Dispatch<React.SetStateAction<boolean>>, setEditIndex: any, index: number }) {
+                                  }: { userid: string | undefined, element: string, setEditing: React.Dispatch<React.SetStateAction<boolean>>, setEditIndex: any, editing: boolean, index: number }) {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     if (!isOpen) {
-        return <button className="p-4"
-                       onClick={() => setIsOpen(true)}
-        ><SettingIcon/></button>
+        return <button className="p-4" onClick={() => setIsOpen(true)}><SettingIcon/></button>
     }
 
     return (
@@ -40,11 +39,12 @@ export default function MenuPopup({
                         }}>Edit
                     </button>
                     <hr className={"border-gray-300"}/>
-                    <button onClick={() => removeData(userid, element)}>
-                        Delete
+                    <button disabled={editing} onClick={() => {
+                        removeData(userid, element)
+                        setIsOpen(false)
+                        toast.success("Short URL was deleted!")
+                    }}>Delete
                     </button>
-                    <hr className={"border-gray-300"}/>
-                    <button>Option</button>
                 </div>
             </Popup>
         </div>

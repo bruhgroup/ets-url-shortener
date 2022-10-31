@@ -17,8 +17,9 @@ export default function Table({
                                   links,
                                   userid,
                                   setEditing,
+                                  editing,
                                   entry
-                              }: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>, entry: any }) {
+                              }: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>, editing: boolean, entry: any }) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [editIndex, setEditIndex] = useState<number>(-1);
 
@@ -35,6 +36,7 @@ export default function Table({
                                           element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}
                                           setEditing={setEditing}
                                           setEditIndex={setEditIndex}
+                                          editing={editing}
                                           index={props.row.index}/>
             }),
             columnHelper.accessor("short", {
@@ -56,7 +58,7 @@ export default function Table({
             }),
             columnHelper.display({
                 header: "QR Code",
-                id:"qr",
+                id: "qr",
                 size: 98,
                 cell: props =>
                     <QrCodePopup url={`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`}
@@ -64,20 +66,21 @@ export default function Table({
             }),
             columnHelper.display({
                 header: "URL",
-                id:"copy",
+                id: "copy",
                 size: 98,
                 cell: props =>
-                    <button className={"max-w-[98px] w-[70px] border mx-2 rounded border-[2px] border-blue-400 text-blue-500 text-sm font-semibold"}
-                            onClick={() => {
-                                navigator.clipboard.writeText(`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`)
-                                    .then(() => toast.success("Link was copied from to your clipboard!"))
-                                    .catch(() => toast.error("An error occurred while attempting to copy link."))
-                            }}
+                    <button
+                        className={"max-w-[98px] w-[70px] border mx-2 rounded border-[2px] border-blue-400 text-blue-500 text-sm font-semibold"}
+                        onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`)
+                                .then(() => toast.success("Link was copied from to your clipboard!"))
+                                .catch(() => toast.error("An error occurred while attempting to copy link."))
+                        }}
                     >
                         COPY
                     </button>
             })
-        ], [userid, setEditing])
+        ], [userid, setEditing, editing])
 
     const table = useReactTable({
         data: links,
