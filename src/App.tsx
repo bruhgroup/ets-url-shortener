@@ -24,7 +24,7 @@ const Redirect = lazy(() => import("./pages/Redirect"));
 function App() {
     return (
         <BrowserRouter>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense>
                 <Routes>
                     <Route index element={<Home/>}/>
                     <Route path={"/*"} element={<Redirect/>}/>
