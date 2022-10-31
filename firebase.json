@@ -9,7 +9,15 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html",
+        "type": 1
+      }
+    ],
+    "cleanUrls": true
   },
   "emulators": {
     "firestore": {
