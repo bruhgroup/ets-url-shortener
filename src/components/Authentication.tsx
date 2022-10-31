@@ -5,7 +5,7 @@ import LoadingIcon from "../assets/LoadingIcon";
 import {toast} from 'react-toastify';
 
 const actionCodeSettings = {
-    url: 'http://localhost:3000/',
+    url: `${window.location.href}`,
     handleCodeInApp: true,
 };
 
