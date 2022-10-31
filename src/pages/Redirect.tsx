@@ -3,12 +3,15 @@ import {resolveLink} from "../firebase/Firestore";
 import Landing from "../components/Landing";
 import LoadingIcon from "../assets/LoadingIcon";
 import Analytics from "../firebase/Analytics";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {auth} from "../App";
+import Authentication from "../components/Authentication";
+import {isSignInWithEmailLink, signInWithEmailLink} from "firebase/auth";
 
 function Redirect() {
-    // TODO: Handle authenticated URLs
-    // const [user, loading, error] = useAuthState(auth);
-    // const [uid, setUid] = useState(user?.uid);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [user, loading] = useAuthState(auth);
+    const [needAuth, setNeedAuth] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [path, setPath] = useState<string>();
     const [cancel, setCancelled] = useState<boolean>(false);
     const [redirectTimer, setRedirectTimer] = useState<boolean>(true);
@@ -17,15 +20,42 @@ function Redirect() {
     useEffect(() => {
         // Only render once and never again.
         resolveLink(window.location.pathname)
-            .then(({link, timer}) => {
+            .then(({link, timer, reqAuth}) => {
                 setPath(link);
                 setRedirectTimer(timer);
-                setLoading(false);
+                setNeedAuth(reqAuth);
+                setIsLoading(false);
             });
     }, [])
 
+    useEffect(() => {
+        if (needAuth) return;
+        if (loading || user) return;
+        if (isSignInWithEmailLink(auth, window.location.href)) {
+            setNeedAuth(false);
+            let email = window.localStorage.getItem('emailForSignIn');
+            while (!email) {
+                let input = window.prompt('Please provide your email for confirmation');
+                if (input !== "") email = input;
+            }
+            signInWithEmailLink(auth, email, window.location.href)
+                .then(() => {
+                    Analytics().user_login();
+                    // Clear email from storage.
+                    window.localStorage.removeItem('emailForSignIn');
+                    // This creates a fake window, so that we're able to close it. (shouldn't do this though)
+                    window.open("about:blank", "_self");
+                    window.close();
+                })
+                .catch(console.error);
+        }
+    }, [loading, needAuth, user])
+
     // Handle redirect timer & cancels
     useEffect(() => {
+        if(needAuth) {
+            if (!user) return;
+        }
             if (path && !cancel) {
                 if (!redirectTimer) {
                     window.location.href = path;
@@ -39,7 +69,7 @@ function Redirect() {
                 return () => clearInterval(interval);
             }
         },
-        [path, cancel, timing, redirectTimer])
+        [path, cancel, timing, redirectTimer, needAuth, user])
 
     // Handle cancel analytics
     useEffect(() => {
@@ -47,7 +77,18 @@ function Redirect() {
         },
         [cancel])
 
-    if (loading || (path && !redirectTimer)) {
+    if (needAuth && !user) {
+        return (
+            <Landing>
+                <p
+                    className={"text-center my-2 font-semibold"}
+                >Authentication is required to redirect to this link </p>
+                <Authentication/>
+            </Landing>
+        )
+    }
+
+    if (isLoading || (path && !redirectTimer)) {
         return (
             <Landing w={false}>
                 <LoadingIcon width={"5rem"} height={"5rem"}/>

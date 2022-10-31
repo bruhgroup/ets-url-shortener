@@ -32,11 +32,11 @@ export default function DataEntry({
                 e.preventDefault();
                 if (link === "") return toast.error("You did not input an URL!");
                 editState ?
-                    update(userid, link, shortLink, description, redirectTimer)
+                    update(userid, link, shortLink, description, redirectTimer, requireAuth)
                         .then((success) => success ?
                             toast.success(`Short URL was edited!`) :
                             toast.error("Short URL could not be edited due to an error.")) :
-                    write(userid, link, shortLink, description, redirectTimer)
+                    write(userid, link, shortLink, description, redirectTimer, requireAuth)
                         .then((success) => success ?
                             toast.success(`Short URL was created!`) :
                             toast.error("Short URL already exists."));

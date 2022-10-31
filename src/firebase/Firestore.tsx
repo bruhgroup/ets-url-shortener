@@ -20,9 +20,10 @@ import Analytics from "./Analytics";
  * @param surl      Short url, will generate a random one if blank
  * @param desc      Description of link
  * @param timer     Redirect timer toggle
+ * @param reqAuth   toggle needing authentication for redirect
  */
 
-export async function write(userid: string | undefined, url: string, surl: string, desc: string, timer: boolean) {
+export async function write(userid: string | undefined, url: string, surl: string, desc: string, timer: boolean, reqAuth: boolean) {
     if (!userid) return false;
     surl = surl === "" ? generateDistinct(5) : surl;
 
@@ -36,11 +37,13 @@ export async function write(userid: string | undefined, url: string, surl: strin
             url: url,
             time: serverTimestamp(),
             description: desc,
-            timer: timer
+            timer: timer,
+            reqAuth: reqAuth
         });
         await setDoc(doc(firestore, 'links', surl), {
             url: url,
-            timer: timer
+            timer: timer,
+            reqAuth: reqAuth
         })
 
         Analytics().created_url(surl);
@@ -70,13 +73,14 @@ export function generateDistinct(length: number) {
  * @return redirect timer state
  */
 export async function resolveLink(key: string) {
-    let link, timer;
+    let link, timer,reqAuth;
     const data = await getDoc(doc(firestore, 'links', key))
     if (data.exists()) {
         link = data.data().url
         timer = data.data().timer
+        reqAuth = data.data().reqAuth
     }
-    return {link, timer};
+    return {link, timer,reqAuth};
 }
 
 export async function resolveSnapshotLinks(userid: string | undefined, snapshot?: QuerySnapshot): Promise<LinkData[]> {
@@ -111,17 +115,19 @@ export async function removeData(userid: string | undefined, surl: string) {
     }
 }
 
-export async function update(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean) {
+export async function update(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean, reqAuth: boolean) {
     try {
         await updateDoc(doc(firestore, `/users/${userid}/userLinks`, surl), {
             url: url,
             time: serverTimestamp(),
             description: describe,
-            timer: timer
+            timer: timer,
+            reqAuth: reqAuth
         });
         await updateDoc(doc(firestore, `/links`, surl), {
             url: url,
-            timer: timer
+            timer: timer,
+            reqAuth: reqAuth
         });
         Analytics().updated_url(surl);
     } catch (e) {
