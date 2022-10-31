@@ -31,7 +31,9 @@ export default function QrCodePopup({url, id}: {url:string, id:string}){
 
     return (
         <Popup
-        trigger={<button>OPEN</button>}
+        trigger={<button
+            className={"max-w-[98px] w-[70px] border mx-2 rounded border-[2px] border-blue-400 text-blue-500 text-sm font-semibold"}
+        >OPEN</button>}
         nested={true}
         >
             <div

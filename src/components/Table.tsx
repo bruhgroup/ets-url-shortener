@@ -56,6 +56,7 @@ export default function Table({
             }),
             columnHelper.display({
                 header: "QR Code",
+                id:"qr",
                 size: 98,
                 cell: props =>
                     <QrCodePopup url={`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`}
@@ -63,9 +64,10 @@ export default function Table({
             }),
             columnHelper.display({
                 header: "URL",
+                id:"copy",
                 size: 98,
                 cell: props =>
-                    <button className={"max-w-[98px] w-[98px]"}
+                    <button className={"max-w-[98px] w-[70px] border mx-2 rounded border-[2px] border-blue-400 text-blue-500 text-sm font-semibold"}
                             onClick={() => {
                                 navigator.clipboard.writeText(`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`)
                                     .then(() => toast.success("Link was copied from to your clipboard!"))
@@ -99,7 +101,7 @@ export default function Table({
                         key={headerGroup.id}>
                         {headerGroup.headers.map(header => (
                             <th key={header.id} colSpan={header.colSpan}
-                                className={"text-left"}>
+                                className={`${header.id === "qr" || header.id === "copy" ? "text-center" : "text-left"}`}>
                                 {header.isPlaceholder ? null : (
                                     <div
                                         className={`my-3 ${header.column.getCanSort() ? "cursor-pointer select-none" : ""} w-[${header.getSize()}px]`}
