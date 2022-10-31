@@ -9,6 +9,7 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
     const [editing, setEditing] = useState<boolean>(editState);
     const [link, setLink] = useState<string>("");
     const [customLink, setCustomLink] = useState<string>(generateDistinct(5));
+    const [success, setSuccess] = useState<boolean>(false)
     const [description, setDescription] = useState<string>("");
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
     const [redirectTimer, setRedirectTimer] = useState<boolean>(true);
@@ -20,11 +21,14 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
     return (
         <form
             className={"flex flex-col justify-center items-center px-[8px] py-[12px] gap-[12px] bg-c-gray-100 rounded"}
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
                 e.preventDefault();
                 if (link === "") return toast.error("You did not input an URL!")
-                editing ? update(userid, link, editEntry.short, description, redirectTimer) : write(userid, link, customLink, description, redirectTimer);
-                toast.success(`Short URL was ${editing ? "edited" : "created"}!`)
+                editing ? setSuccess(await update(userid, link, editEntry.short, description, redirectTimer)) : setSuccess(await write(userid, link, customLink, description, redirectTimer));
+                success ?
+                    toast.success(`Short URL was ${editing ? "edited" : "created"}!`)
+                    :
+                    toast.error("Short URl already exists!")
                 setLink("");
                 setCustomLink(generateDistinct(5));
                 setDescription("");
