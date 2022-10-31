@@ -4,10 +4,6 @@
   "private": true,
   "dependencies": {
     "@tanstack/react-table": "^8.5.15",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.11.65",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
@@ -21,8 +17,7 @@
     "react-toastify": "^9.0.8",
     "reactjs-popup": "^2.0.5",
     "typescript": "^4.8.4",
-    "use-local-storage-state": "^18.1.1",
-    "web-vitals": "^2.1.4"
+    "use-local-storage-state": "^18.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,8 +29,7 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
