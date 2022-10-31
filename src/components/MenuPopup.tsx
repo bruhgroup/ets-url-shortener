@@ -2,7 +2,8 @@ import Popup from "reactjs-popup";
 import SettingIcon from "../assets/SettingIcon";
 import {removeData} from "../firebase/Firestore";
 
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
+import {toast} from "react-toastify";
 
 export default function MenuPopup({
                                       userid,
@@ -13,13 +14,9 @@ export default function MenuPopup({
                                   }: { userid: string | undefined, element: string, setEditing: React.Dispatch<React.SetStateAction<boolean>>, setEditIndex: any, index: number }) {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
-    useEffect( () => {
-
-    })
-
-    if(!isOpen) {
+    if (!isOpen) {
         return <button className="p-4"
-        onClick={()=> setIsOpen(true)}
+                       onClick={() => setIsOpen(true)}
         ><SettingIcon/></button>
     }
 
@@ -39,8 +36,8 @@ export default function MenuPopup({
                             setEditing(true);
                             setEditIndex(index);
                             setIsOpen(false)
-                        }
-                        }>Edit
+                            toast.info("You are editing the short URL!")
+                        }}>Edit
                     </button>
                     <hr className={"border-gray-300"}/>
                     <button onClick={() => removeData(userid, element)}>

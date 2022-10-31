@@ -42,11 +42,6 @@ function Dashboard() {
             <NavBar/>
             <div className={"max-w-screen-md mx-auto p-4 flex flex-col gap-2 bg-white rounded-b-lg "}>
                 <DataEntry userid={user?.uid} editState={editing} editEntry={entry} setEditState={setEditing}/>
-                {editing ? (
-                    <button
-                        className={"bg-red-500 rounded-lg m-auto p-1"}
-                        onClick={() => setEditing(false)}>Cancel Edit</button>
-                ) : <></>}
                 <div className={"flex flex-col items-center justify-center"}>
                     <div className={"flex flex-row w-full"}>
                     </div>

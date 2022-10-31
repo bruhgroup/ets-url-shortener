@@ -1,21 +1,21 @@
 import ArrowIcon from "../assets/ArrowIcon";
-import {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Switch from "./Switch";
 import {generateDistinct, update, write} from "../firebase/Firestore";
 import {LinkData} from "../types";
 import {toast} from "react-toastify";
 
-export default function DataEntry({userid, editState, editEntry, setEditState}: { userid: string | undefined, editState: boolean, editEntry: LinkData, setEditState: any }) {
-    const [editing, setEditing] = useState<boolean>(editState);
+export default function DataEntry({
+                                      userid,
+                                      editEntry,
+                                      editState,
+                                      setEditState
+                                  }: { userid: string | undefined, editEntry: LinkData, editState: boolean, setEditState: any }) {
     const [link, setLink] = useState<string>("");
     const [customLink, setCustomLink] = useState<string>(generateDistinct(5));
     const [description, setDescription] = useState<string>("");
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
     const [redirectTimer, setRedirectTimer] = useState<boolean>(true);
-
-    useEffect(() => {
-        setEditing(editState)
-    }, [editState])
 
     return (
         <form
@@ -23,8 +23,8 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
             onSubmit={(e) => {
                 e.preventDefault();
                 if (link === "") return toast.error("You did not input an URL!")
-                editing ? update(userid, link, editEntry.short, description, redirectTimer) : write(userid, link, customLink, description, redirectTimer);
-                toast.success(`Short URL was ${editing ? "edited" : "created"}!`)
+                editState ? update(userid, link, editEntry.short, description, redirectTimer) : write(userid, link, customLink, description, redirectTimer);
+                toast.success(`Short URL was ${editState ? "edited" : "created"}!`)
                 setLink("");
                 setCustomLink(generateDistinct(5));
                 setDescription("");
@@ -32,14 +32,14 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
             }}
             id={"urls"}>
 
-            {editing ? <span className={"stripes w-full text-center h-full m-auto"}>Editing Short URL</span> : <></>}
+            {editState && <div className={"stripes h-[15px] rounded-2xl w-full"}/>}
 
             <div className={"flex flex-row justify-center items-center gap-[20px] w-full"}>
                 <input
                     className={"flex rounded w-[50%] p-2 min-w-[20px] border-2 border-c-gray-300"}
                     placeholder={"Your URL to shorten"}
                     onChange={(e) => setLink(e.target.value)}
-                    value = {link}
+                    value={link}
                     type={"url"}
                 />
                 <ArrowIcon/>
@@ -51,9 +51,9 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
                         className={"w-full p-2 min-w-[50px]"}
                         placeholder={`${customLink} (or set your own)`}
                         pattern={"[a-zA-Z0-9]+$"}
-                        disabled = {editing}
+                        disabled={editState}
                         onChange={(e) => setCustomLink(e.target.value)}
-                        value={editing ? editEntry.short : customLink}
+                        value={editState ? editEntry.short : customLink}
                         type={"text"}
                     />
                 </div>
@@ -70,8 +70,15 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
                         type={"text"}
                     />
                     <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-black font-medium"}>
-                        <button className={"text-white"} type={"submit"}>{editing ? "Edit Short URL" :"Create Short URL"}</button>
+                        <button className={"text-white"}
+                                type={"submit"}>{editState ? "Edit Short URL" : "Create Short URL"}</button>
                     </div>
+                    {editState && <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-red-500 font-medium"}>
+                        <button className={"text-white"} onClick={() => {
+                            setEditState(false)
+                            toast.info("Editing cancelled!")
+                        }}>Cancel</button>
+                    </div>}
                 </div>
 
                 <div className={"flex justify-evenly items-center gap-[10px] w-full"}>
@@ -81,5 +88,8 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
                             onChange={() => setRedirectTimer(!redirectTimer)}/>
                 </div>
             </div>
-        </form>)
+
+            {editState && <div className={"stripes h-[15px] rounded-2xl w-full"}/>}
+        </form>
+    )
 }
