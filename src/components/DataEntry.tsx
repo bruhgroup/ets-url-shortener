@@ -17,6 +17,12 @@ export default function DataEntry({
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
     const [redirectTimer, setRedirectTimer] = useState<boolean>(true);
 
+    const reset = () => {
+        setLink("");
+        setShortLink(generateDistinct(5));
+        setDescription("");
+    }
+
     useEffect(() => {
         if (!editState || Object.keys(editEntry).length === 0) return;
 
@@ -40,9 +46,7 @@ export default function DataEntry({
                         .then((success) => success ?
                             toast.success(`Short URL was created!`) :
                             toast.error("Short URL already exists."));
-                setLink("");
-                setShortLink(generateDistinct(5));
-                setDescription("");
+                reset();
                 setEditState(false)
             }}
             id={"urls"}>
@@ -92,8 +96,9 @@ export default function DataEntry({
                         {editState && <div
                             className={"w-full sm:w-fit max-h-[45px] rounded px-[16px] py-[8px] bg-red-500 font-medium"}>
                             <button className={"text-white"} onClick={() => {
-                                setEditState(false)
-                                toast.info("Editing cancelled!")
+                                reset();
+                                setEditState(false);
+                                toast.info("Editing cancelled!");
                             }}>Cancel
                             </button>
                         </div>}
