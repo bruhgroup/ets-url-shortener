@@ -23,7 +23,7 @@ import Analytics from "./Analytics";
  */
 
 export async function write(userid: string | undefined, url: string, surl: string, desc: string, timer: boolean) {
-    if (!userid) return;
+    if (!userid) return false;
     surl = surl === "" ? generateDistinct(5) : surl;
 
     // Check if link already exists
@@ -46,7 +46,9 @@ export async function write(userid: string | undefined, url: string, surl: strin
         Analytics().created_url(surl);
     } catch (e) {
         console.error(e);
+        return false;
     }
+    return true;
 }
 
 /**
@@ -124,5 +126,7 @@ export async function update(userid: string | undefined, url: string, surl: stri
         Analytics().updated_url(surl);
     } catch (e) {
         console.error(e)
+        return false;
     }
+    return true;
 }

@@ -1,5 +1,5 @@
 import ArrowIcon from "../assets/ArrowIcon";
-import React, {useState} from "react";
+import {useState} from "react";
 import Switch from "./Switch";
 import {generateDistinct, update, write} from "../firebase/Firestore";
 import {LinkData} from "../types";
@@ -13,6 +13,7 @@ export default function DataEntry({
                                   }: { userid: string | undefined, editEntry: LinkData, editState: boolean, setEditState: any }) {
     const [link, setLink] = useState<string>("");
     const [customLink, setCustomLink] = useState<string>(generateDistinct(5));
+    const [success, setSuccess] = useState<boolean>(false)
     const [description, setDescription] = useState<string>("");
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
     const [redirectTimer, setRedirectTimer] = useState<boolean>(true);
@@ -20,11 +21,15 @@ export default function DataEntry({
     return (
         <form
             className={"flex flex-col justify-center items-center px-[8px] py-[12px] gap-[12px] bg-c-gray-100 rounded"}
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
                 e.preventDefault();
-                if (link === "") return toast.error("You did not input an URL!")
-                editState ? update(userid, link, editEntry.short, description, redirectTimer) : write(userid, link, customLink, description, redirectTimer);
-                toast.success(`Short URL was ${editState ? "edited" : "created"}!`)
+                if (link === "") return toast.error("You did not input an URL!");
+                editState ?
+                    setSuccess(await update(userid, link, editEntry.short, description, redirectTimer)) :
+                    setSuccess(await write(userid, link, customLink, description, redirectTimer));
+                success ?
+                    toast.success(`Short URL was ${editState ? "edited" : "created"}!`) :
+                    toast.error("Short URl already exists!");
                 setLink("");
                 setCustomLink(generateDistinct(5));
                 setDescription("");
