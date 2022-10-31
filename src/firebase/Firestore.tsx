@@ -1,4 +1,4 @@
-import {firestore} from "./App";
+import {firestore} from "../App";
 import {
     setDoc,
     doc,
@@ -9,7 +9,8 @@ import {
     updateDoc,
     getDocs, collection
 } from "firebase/firestore";
-import {LinkData} from "./types";
+import {LinkData} from "../types";
+import Analytics from "./Analytics";
 
 /**
  * Writes input to the database
@@ -41,8 +42,10 @@ export async function write(userid: string | undefined, url: string, surl: strin
             url: url,
             timer: timer
         })
+
+        Analytics().created_url(surl);
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error(e);
     }
 }
 
@@ -74,9 +77,8 @@ export async function resolveLink(key: string) {
     return {link, timer};
 }
 
-export async function resolveUserLinks(userid: string | undefined, snapshot?: QuerySnapshot): Promise<LinkData[]> {
+export async function resolveSnapshotLinks(userid: string | undefined, snapshot?: QuerySnapshot): Promise<LinkData[]> {
     if (!userid) return [] as LinkData[];
-    console.log({s: snapshot?.docs})
     if (snapshot)
         return parseSnapshot(snapshot);
     else
@@ -88,7 +90,6 @@ function parseSnapshot(snapshot: QuerySnapshot) {
     snapshot.forEach((docs) => {
         data.push({short: docs.id, long: docs.data().url, desc: docs.data().description})
     });
-    console.log(data);
     return data;
 }
 
@@ -99,21 +100,29 @@ function parseSnapshot(snapshot: QuerySnapshot) {
  */
 export async function removeData(userid: string | undefined, surl: string) {
     // Must delete links before userLinks due to security rules.
-    await deleteDoc(doc(firestore, 'links', surl));
-    await deleteDoc(doc(firestore, `/users/${userid}/userLinks`, surl));
+    try {
+        await deleteDoc(doc(firestore, 'links', surl));
+        await deleteDoc(doc(firestore, `/users/${userid}/userLinks`, surl));
+        Analytics().deleted_url(surl);
+    } catch (e) {
+        console.error(e)
+    }
 }
 
-//TODO: update data change stuff when user requests it
 export async function update(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean) {
-    await updateDoc(doc(firestore, `/users/${userid}/userLinks`, surl), {
-        url: url,
-        time: serverTimestamp(),
-        description: describe,
-        timer: timer
-    });
-    await updateDoc(doc(firestore, `/links`, surl), {
-        url: url,
-        timer: timer
-    });
-
+    try {
+        await updateDoc(doc(firestore, `/users/${userid}/userLinks`, surl), {
+            url: url,
+            time: serverTimestamp(),
+            description: describe,
+            timer: timer
+        });
+        await updateDoc(doc(firestore, `/links`, surl), {
+            url: url,
+            timer: timer
+        });
+        Analytics().updated_url(surl);
+    } catch (e) {
+        console.error(e)
+    }
 }

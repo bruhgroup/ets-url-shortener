@@ -1,6 +1,6 @@
 import Popup from "reactjs-popup";
 import SettingIcon from "../assets/SettingIcon";
-import {removeData} from "../Database";
+import {removeData} from "../firebase/Firestore";
 
 import React, {useEffect, useState} from "react";
 

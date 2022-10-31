@@ -1,7 +1,7 @@
 import ArrowIcon from "../assets/ArrowIcon";
 import {useEffect, useState} from "react";
 import Switch from "./Switch";
-import {generateDistinct, update, write} from "../Database";
+import {generateDistinct, update, write} from "../firebase/Firestore";
 import {LinkData} from "../types";
 import {toast} from "react-toastify";
 

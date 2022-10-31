@@ -9,6 +9,7 @@ import {ToastContainer} from "react-toastify";
 import Landing from "../components/Landing";
 
 import 'react-toastify/dist/ReactToastify.min.css';
+import Analytics from "../firebase/Analytics";
 
 function Home() {
     const [user, loading] = useAuthState(auth);
@@ -27,7 +28,8 @@ function Home() {
                 if (input !== "") email = input;
             }
             signInWithEmailLink(auth, email, window.location.href)
-                .then((result) => {
+                .then(() => {
+                    Analytics().user_login();
                     // Clear email from storage.
                     window.localStorage.removeItem('emailForSignIn');
                     // This creates a fake window, so that we're able to close it. (shouldn't do this though)

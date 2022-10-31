@@ -2,6 +2,7 @@ import {auth} from "../App";
 import {signOut} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import SiteLogo from "../assets/SiteLogo";
+import Analytics from "../firebase/Analytics";
 
 export default function NavBar() {
     const navigate = useNavigate();
@@ -13,7 +14,10 @@ export default function NavBar() {
                 <div
                     className={"flex flex-row items-center box-border border-white border-2 rounded px-[16px] py-[8px]"}>
                     <button className={"items-center text-white text-xl"} type= "button"
-                            onClick={() => {signOut(auth).then(() => navigate('/')) }}>Logout
+                            onClick={() => {
+                                Analytics().user_logout();
+                                signOut(auth).then(() => navigate('/'))
+                            }}>Logout
                     </button>
                 </div>
             </div>

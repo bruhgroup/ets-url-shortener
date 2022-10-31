@@ -1,17 +1,17 @@
 import {useAuthState} from "react-firebase-hooks/auth";
-import {auth, firestore} from "../App";
+import {analytics, auth, firestore} from "../App";
 import React, {useCallback, useEffect, useState} from "react";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkData} from "../types";
-import {resolveUserLinks} from "../Database";
+import {resolveSnapshotLinks} from "../firebase/Firestore";
 import NavBar from "../components/NavBar";
 import DataEntry from "../components/DataEntry";
 import Table from "../components/Table";
 import {collection, onSnapshot, orderBy, query} from "firebase/firestore";
+import {setUserId} from "firebase/analytics";
 
 function Dashboard() {
     const [user, loading] = useAuthState(auth);
-    const [uid, setUid] = useState(user?.uid);
     const [editing, setEditing] = useState(false);
     const [entry, setEntry] = useState<LinkData>(Object);
     const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []});
@@ -20,25 +20,28 @@ function Dashboard() {
     // Update UID once user logs in.
     useEffect(() => {
         if (loading) return;
-        setUid(user?.uid);
+        setUserId(analytics, user?.uid ?? null)
     }, [loading, user?.uid]);
 
-    //attaches listener
+    // Attach Firestore listener
     useEffect(() => {
-        const q = query(collection(firestore, `/users/${uid}/userLinks`), orderBy("url", "asc"))
+        const q = query(collection(firestore, `/users/${user?.uid}/userLinks`), orderBy("url", "asc"))
         const unsub = onSnapshot(q, async (querySnapshot) => {
-            memoResolve(await resolveUserLinks(uid, querySnapshot));
+            memoResolve(await resolveSnapshotLinks(user?.uid, querySnapshot));
         });
         return () => unsub();
-    }, [memoResolve, uid])
+    }, [memoResolve, user?.uid])
 
-    const editEntry = (entries: LinkData) => setEntry(entries);
+    // This should never happen, but just in case.
+    if (user?.uid === undefined) {
+        return <>Not authenticated.</>
+    }
 
     return (
         <div className={"bg-c-gray-100 h-screen"}>
             <NavBar/>
             <div className={"max-w-screen-md mx-auto p-4 flex flex-col gap-2 bg-white rounded-b-lg "}>
-                <DataEntry userid={uid} editState={editing} editEntry={entry} setEditState={setEditing}/>
+                <DataEntry userid={user?.uid} editState={editing} editEntry={entry} setEditState={setEditing}/>
                 {editing ? (
                     <button
                         className={"bg-red-500 rounded-lg m-auto p-1"}
@@ -48,7 +51,8 @@ function Dashboard() {
                     <div className={"flex flex-row w-full"}>
                     </div>
                 </div>
-                <Table links={resolvedLinks} userid={uid} setEditing={setEditing} entry={editEntry}/>
+                <Table links={resolvedLinks} userid={user?.uid} setEditing={setEditing}
+                       entry={(entries: LinkData) => setEntry(entries)}/>
             </div>
         </div>
     )

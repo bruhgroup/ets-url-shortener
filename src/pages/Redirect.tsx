@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {resolveLink} from "../Database";
+import {resolveLink} from "../firebase/Firestore";
 import Landing from "../components/Landing";
 import LoadingIcon from "../assets/LoadingIcon";
+import Analytics from "../firebase/Analytics";
 
 function Redirect() {
     // TODO: Handle authenticated URLs
@@ -23,17 +24,28 @@ function Redirect() {
             });
     }, [])
 
+    // Handle redirect timer & cancels
     useEffect(() => {
             if (path && !cancel) {
-                if (!redirectTimer) window.location.href = path;
+                if (!redirectTimer) {
+                    window.location.href = path;
+                    Analytics().redirect(window.location.pathname);
+                }
                 const interval = setInterval(() => {
                     if (timing > 0) return setTiming(timing - 1);
                     window.location.href = path;
+                    Analytics().redirect(window.location.pathname);
                 }, 1000);
                 return () => clearInterval(interval);
             }
         },
         [path, cancel, timing, redirectTimer])
+
+    // Handle cancel analytics
+    useEffect(() => {
+            if (cancel) Analytics().redirect_cancelled(window.location.pathname);
+        },
+        [cancel])
 
     if (loading || !redirectTimer) {
         return (
