@@ -4,7 +4,6 @@ import {
     doc,
     serverTimestamp,
     QuerySnapshot,
-    DocumentData,
     deleteDoc,
     getDoc,
     updateDoc,
@@ -18,7 +17,7 @@ import {LinkData} from "./types";
  * @param userid    user id
  * @param url       long url to store
  * @param surl      Short url, will generate a random one if blank
- * @param desc  Description of link
+ * @param desc      Description of link
  * @param timer     Redirect timer toggle
  */
 
