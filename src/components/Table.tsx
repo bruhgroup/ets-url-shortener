@@ -13,11 +13,16 @@ import QrCodePopup from "./QrCodePopup";
 
 const columnHelper = createColumnHelper<LinkData>()
 
-export default function Table({links, userid, setEditing, entry}: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>, entry: any}) {
+export default function Table({
+                                  links,
+                                  userid,
+                                  setEditing,
+                                  entry
+                              }: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>, entry: any }) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [editIndex, setEditIndex] = useState<number>(-1);
 
-    useEffect(() =>{
+    useEffect(() => {
         entry(links[editIndex])
     })
 
@@ -27,7 +32,10 @@ export default function Table({links, userid, setEditing, entry}: { links: LinkD
                 id: "settings",
                 size: 50,
                 cell: props => <MenuPopup userid={userid}
-                                          element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`} setEditing = {setEditing} setEditIndex={setEditIndex} index={props.row.index}/>
+                                          element={`${props.row.getVisibleCells()[1].getValue() ?? ""}`}
+                                          setEditing={setEditing}
+                                          setEditIndex={setEditIndex}
+                                          index={props.row.index}/>
             }),
             columnHelper.accessor("short", {
                 header: "Short",
@@ -50,7 +58,8 @@ export default function Table({links, userid, setEditing, entry}: { links: LinkD
                 header: "QR Code",
                 size: 98,
                 cell: props =>
-                    <QrCodePopup url={`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`} id={`${props.row.getVisibleCells()[1].getValue()}`}/>
+                    <QrCodePopup url={`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`}
+                                 id={`${props.row.getVisibleCells()[1].getValue()}`}/>
             }),
             columnHelper.display({
                 header: "URL",

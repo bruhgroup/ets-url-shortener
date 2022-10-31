@@ -7,7 +7,8 @@ import {
     DocumentData,
     deleteDoc,
     getDoc,
-    updateDoc
+    updateDoc,
+    getDocs, collection
 } from "firebase/firestore";
 import {LinkData} from "./types";
 
@@ -17,31 +18,29 @@ import {LinkData} from "./types";
  * @param userid    user id
  * @param url       long url to store
  * @param surl      Short url, will generate a random one if blank
- * @param describe  Description of link
+ * @param desc  Description of link
  * @param timer     Redirect timer toggle
  */
 
-export async function write(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean) {
+export async function write(userid: string | undefined, url: string, surl: string, desc: string, timer: boolean) {
     if (!userid) return;
-    let result = generateDistinct(5);
-    surl = surl === "" ? result : surl;
-    //TODO: Validate surl, right now it overwrites if same surl
-    //Think this works but idk
+    surl = surl === "" ? generateDistinct(5) : surl;
+
+    // Check if link already exists
     let want = await getDoc(doc(firestore, 'links', surl))
-    if (want.exists()) {
-        return false;
-    }
+    if (want.exists()) return false;
+
     try {
         // Must create user's links first before attempting to create /links
-        await setDoc(doc(firestore,`users/${userid}/userLinks`, surl),{
-            surl: url,
+        await setDoc(doc(firestore, `users/${userid}/userLinks`, surl), {
+            url: url,
             time: serverTimestamp(),
-            description: describe,
-            noTimer: timer
+            description: desc,
+            timer: timer
         });
-        await setDoc(doc(firestore, 'links', surl),{
-            surl: url,
-            noTimer: timer
+        await setDoc(doc(firestore, 'links', surl), {
+            url: url,
+            timer: timer
         })
     } catch (e) {
         console.error("Error adding document: ", e);
@@ -54,7 +53,7 @@ export async function write(userid: string | undefined, url: string, surl: strin
 export function generateDistinct(length: number) {
     const distinct: string = "ABCDEFGHJKLMNPQRSTUVabcdefhjkmnorstuv23456789"
     let result = "";
-    for ( let i = 0; i < length; i++ ) {
+    for (let i = 0; i < length; i++) {
         result += distinct.charAt(Math.floor(Math.random() * distinct.length));
     }
     return result;
@@ -67,28 +66,28 @@ export function generateDistinct(length: number) {
  * @return redirect timer state
  */
 export async function resolveLink(key: string) {
-    let link;
-    let cancel;
-    const d = doc(firestore, 'links', key)
-    let want = await getDoc(d)
-    if (want.exists()) {
-        link = want.data().surl
-        cancel = want.data().noTimer
+    let link, timer;
+    const data = await getDoc(doc(firestore, 'links', key))
+    if (data.exists()) {
+        link = data.data().url
+        timer = data.data().timer
     }
-    return {link, cancel};
+    return {link, timer};
 }
 
-export async function resolveUserLinks(userid: string | undefined, snapshot?: QuerySnapshot<DocumentData>): Promise<LinkData[]> {
+export async function resolveUserLinks(userid: string | undefined, snapshot?: QuerySnapshot): Promise<LinkData[]> {
     if (!userid) return [] as LinkData[];
-    if (snapshot) return await resolveSnapshotUserLinks(snapshot);
-    //TODO: make new  snapshot if no snapshot maybe not needed
-    return [] as LinkData[];
+    console.log({s: snapshot?.docs})
+    if (snapshot)
+        return parseSnapshot(snapshot);
+    else
+        return parseSnapshot(await getDocs(collection(firestore, `/users/${userid}/userLinks`)));
 }
 
-async function resolveSnapshotUserLinks(snapshot: QuerySnapshot) {
+function parseSnapshot(snapshot: QuerySnapshot) {
     let data: LinkData[] = [];
     snapshot.forEach((docs) => {
-        data.push({short: docs.id, long: docs.data().surl, desc: docs.data().description})
+        data.push({short: docs.id, long: docs.data().url, desc: docs.data().description})
     });
     console.log(data);
     return data;
@@ -100,17 +99,17 @@ async function resolveSnapshotUserLinks(snapshot: QuerySnapshot) {
  * @param surl
  */
 export async function removeData(userid: string | undefined, surl: string) {
-    const userPath = doc(firestore, `/users/${userid}/userLinks`, surl)
-    const linkPath = doc(firestore, 'links', surl)
-    await deleteDoc(userPath);
-    await deleteDoc(linkPath);
+    // Must delete links before userLinks due to security rules.
+    await deleteDoc(doc(firestore, 'links', surl));
+    await deleteDoc(doc(firestore, `/users/${userid}/userLinks`, surl));
 }
+
 //TODO: update data change stuff when user requests it
-export async function update(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean){
+export async function update(userid: string | undefined, url: string, surl: string, describe: string, timer: boolean) {
     await updateDoc(doc(firestore, `/users/${userid}/userLinks`, surl), {
-            surl: url,
-            time: serverTimestamp(),
-            description: describe,
-            noTimer: timer
+        url: url,
+        time: serverTimestamp(),
+        description: describe,
+        timer: timer
     });
 }

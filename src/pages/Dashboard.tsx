@@ -15,50 +15,43 @@ function Dashboard() {
     const [editing, setEditing] = useState(false);
     const [entry, setEntry] = useState<LinkData>(Object);
     const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []});
-    const memoedResolve = useCallback(
-        (linksArr:LinkData[])=> {
-            setResolvedLinks(linksArr);
-    }, [setResolvedLinks])
+    const memoResolve = useCallback((linksArr: LinkData[]) => setResolvedLinks(linksArr), [setResolvedLinks])
 
     // Update UID once user logs in.
-    useEffect( () => {
-        console.log("use effect")
+    useEffect(() => {
         if (loading) return;
         setUid(user?.uid);
     }, [loading, user?.uid]);
-    
+
     //attaches listener
-    useEffect(()=> {
-        // Always calls once on page load and updates the snapshot, so local storage isn't really doing anything..?
-        console.log("this one ran")
-        const q = query(collection(firestore,`/users/${uid}/userLinks`), orderBy("surl", "asc"))
-        const unsub = onSnapshot(q,   async (querySnapshot) => {
-            memoedResolve(await resolveUserLinks(uid, querySnapshot));
-            console.log("resolved links")
+    useEffect(() => {
+        const q = query(collection(firestore, `/users/${uid}/userLinks`), orderBy("url", "asc"))
+        const unsub = onSnapshot(q, async (querySnapshot) => {
+            memoResolve(await resolveUserLinks(uid, querySnapshot));
         });
         return () => unsub();
-        },[memoedResolve, uid])
+    }, [memoResolve, uid])
 
-    const editEntry = (entries: LinkData) => {
-        setEntry(entries);
-    }
+    const editEntry = (entries: LinkData) => setEntry(entries);
 
     return (
         <div className={"bg-c-gray-100 h-screen"}>
             <NavBar/>
             <div className={"max-w-screen-md mx-auto p-4 flex flex-col gap-2 bg-white rounded-b-lg "}>
                 <DataEntry userid={uid} editState={editing} editEntry={entry} setEditState={setEditing}/>
-                {editing ? <button
+                {editing ? (
+                    <button
                         className={"bg-red-500 rounded-lg m-auto p-1"}
                         onClick={() => setEditing(false)}>Cancel Edit</button>
-                    : <></>}
+                ) : <></>}
                 <div className={"flex flex-col items-center justify-center"}>
                     <div className={"flex flex-row w-full"}>
                     </div>
                 </div>
-                 <Table links={resolvedLinks} userid={uid} setEditing={setEditing} entry={editEntry}/>
+                <Table links={resolvedLinks} userid={uid} setEditing={setEditing} entry={editEntry}/>
             </div>
         </div>
     )
 }
+
 export default Dashboard;

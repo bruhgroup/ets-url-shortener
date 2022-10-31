@@ -5,12 +5,12 @@ import LoadingIcon from "../assets/LoadingIcon";
 import {toast} from 'react-toastify';
 
 const actionCodeSettings = {
-    url: `${window.location.href}`,
+    url: window.location.href,
     handleCodeInApp: true,
 };
 
 export default function Authentication() {
-    const [email, setEmail] = useState<string>();
+    const [email, setEmail] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false)
 
     return (
@@ -22,7 +22,7 @@ export default function Authentication() {
                 className={"flex flex-col gap-4 m-auto max-w-full w-[22em]"}
                 onSubmit={(e) => {
                     e.preventDefault();
-                    if (!email) return toast.error("You did not input an email address!")
+                    if (email === "") return toast.error("You did not input an email address!")
 
                     setLoading(true);
                     sendSignInLinkToEmail(auth, email, actionCodeSettings)

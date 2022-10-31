@@ -21,7 +21,8 @@ service cloud.firestore {
         allow get
 
         // Allow modifications only if user owns the link.
-        allow write: if exists(/databases/$(database)/documents/users/$(request.auth.uid)/userLinks/$(request.resource.id))
+        allow create, update: if exists(/databases/$(database)/documents/users/$(request.auth.uid)/userLinks/$(request.resource.id))
+        allow delete: if exists(/databases/$(database)/documents/users/$(request.auth.uid)/userLinks/$(link))
     }
   }
 }

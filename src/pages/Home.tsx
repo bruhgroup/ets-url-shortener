@@ -22,7 +22,9 @@ function Home() {
             setSignIn(true);
             let email = window.localStorage.getItem('emailForSignIn');
             while (!email) {
-                email = window.prompt('Please provide your email for confirmation');
+                // TODO: Validate email syntax, or attempt sign-in but handle error properly with a page.
+                let input = window.prompt('Please provide your email for confirmation');
+                if (input !== "") email = input;
             }
             signInWithEmailLink(auth, email, window.location.href)
                 .then((result) => {
@@ -33,9 +35,7 @@ function Home() {
                     window.open("about:blank", "_self");
                     window.close();
                 })
-                .catch((error) => {
-                    // TODO: Show popup if error
-                });
+                .catch(console.error);
         }
     }, [loading, navigate, user])
 

@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import Switch from "./Switch";
 import {generateDistinct, update, write} from "../Database";
 import {LinkData} from "../types";
+import {toast} from "react-toastify";
 
 export default function DataEntry({userid, editState, editEntry, setEditState}: { userid: string | undefined, editState: boolean, editEntry: LinkData, setEditState: any }) {
     const [editing, setEditing] = useState<boolean>(editState);
@@ -10,8 +11,7 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
     const [customLink, setCustomLink] = useState<string>(generateDistinct(5));
     const [description, setDescription] = useState<string>("");
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
-    const [noRedirectTimer, setNoRedirectTimer] = useState<boolean>(false);
-    const [somethingElse, setSomethingElse] = useState<boolean>(false);
+    const [redirectTimer, setRedirectTimer] = useState<boolean>(true);
 
     useEffect(() => {
         setEditing(editState)
@@ -22,8 +22,9 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
             className={"flex flex-col justify-center items-center px-[8px] py-[12px] gap-[12px] bg-c-gray-100 rounded"}
             onSubmit={(e) => {
                 e.preventDefault();
-                editing ? update(userid, link, editEntry.short, description, noRedirectTimer) : write(userid, link, customLink, description, noRedirectTimer);
-                console.log({_msg:"link created", link, customLink, description})
+                if (link === "") return toast.error("You did not input an URL!")
+                editing ? update(userid, link, editEntry.short, description, redirectTimer) : write(userid, link, customLink, description, redirectTimer);
+                toast.success(`Short URL was ${editing ? "edited" : "created"}!`)
                 setLink("");
                 setCustomLink(generateDistinct(5));
                 setDescription("");
@@ -31,7 +32,7 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
             }}
             id={"urls"}>
 
-            {editing ? <span className={"stripes w-full text-center h-full m-auto"}>Editing Mode</span> : <></>}
+            {editing ? <span className={"stripes w-full text-center h-full m-auto"}>Editing Short URL</span> : <></>}
 
             <div className={"flex flex-row justify-center items-center gap-[20px] w-full"}>
                 <input
@@ -69,17 +70,15 @@ export default function DataEntry({userid, editState, editEntry, setEditState}: 
                         type={"text"}
                     />
                     <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-black font-medium"}>
-                        <button className={"text-white"} type={"submit"}>{editing ? "Submit edit" :"Create Short URL"}</button>
+                        <button className={"text-white"} type={"submit"}>{editing ? "Edit Short URL" :"Create Short URL"}</button>
                     </div>
                 </div>
 
                 <div className={"flex justify-evenly items-center gap-[10px] w-full"}>
                     <Switch label={"Require Authentication"} state={requireAuth}
                             onChange={() => setRequiredAuth(!requireAuth)}/>
-                    <Switch label={"Disable Redirect Timer"} state={noRedirectTimer}
-                            onChange={() => setNoRedirectTimer(!noRedirectTimer)}/>
-                    <Switch label={"Something else"} state={somethingElse}
-                            onChange={() => setSomethingElse(!somethingElse)}/>
+                    <Switch label={"Disable Redirect Timer"} state={!redirectTimer}
+                            onChange={() => setRedirectTimer(!redirectTimer)}/>
                 </div>
             </div>
         </form>)
