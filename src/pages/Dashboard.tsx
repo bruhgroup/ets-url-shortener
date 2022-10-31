@@ -41,13 +41,13 @@ function Dashboard() {
         <div className={"bg-c-gray-100 h-screen"}>
             <NavBar/>
             <div className={"max-w-screen-md mx-auto p-4 flex flex-col gap-2 bg-white rounded-b-lg "}>
-                <DataEntry userid={user?.uid} editState={editing} editEntry={entry} setEditState={setEditing}/>
+                <DataEntry userid={user?.uid} editEntry={entry} editState={editing} setEditState={setEditing}/>
                 <div className={"flex flex-col items-center justify-center"}>
                     <div className={"flex flex-row w-full"}>
                     </div>
                 </div>
                 <Table links={resolvedLinks} userid={user?.uid} setEditing={setEditing}
-                       entry={(entries: LinkData) => setEntry(entries)}/>
+                       entry={(entries: LinkData) => setEntry(entries)} editing={editing}/>
             </div>
         </div>
     )
