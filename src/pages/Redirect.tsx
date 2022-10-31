@@ -47,7 +47,7 @@ function Redirect() {
         },
         [cancel])
 
-    if (loading || !redirectTimer) {
+    if (loading || (path && !redirectTimer)) {
         return (
             <Landing w={false}>
                 <LoadingIcon width={"5rem"} height={"5rem"}/>
