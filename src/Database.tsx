@@ -111,4 +111,9 @@ export async function update(userid: string | undefined, url: string, surl: stri
         description: describe,
         timer: timer
     });
+    await updateDoc(doc(firestore, `/links`, surl), {
+        url: url,
+        timer: timer
+    });
+
 }
