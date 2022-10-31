@@ -19,13 +19,15 @@ export default function Table({
                                   setEditing,
                                   editing,
                                   entry
-                              }: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>, editing: boolean, entry: any }) {
+                              }: { links: LinkData[], userid: string | undefined, setEditing: React.Dispatch<React.SetStateAction<boolean>>, editing: boolean, entry: React.Dispatch<React.SetStateAction<LinkData>> }) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [editIndex, setEditIndex] = useState<number>(-1);
 
     useEffect(() => {
-        entry(links[editIndex])
-    })
+        if (editIndex !== -1) {
+            entry(links[editIndex])
+        }
+    }, [editIndex, entry, links])
 
     const columns = useMemo<ColumnDef<LinkData, any>[]>(
         () => [

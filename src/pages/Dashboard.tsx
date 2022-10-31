@@ -1,6 +1,6 @@
 import {useAuthState} from "react-firebase-hooks/auth";
 import {analytics, auth, firestore} from "../App";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useLocalStorageState from "use-local-storage-state";
 import {LinkData} from "../types";
 import {resolveSnapshotLinks} from "../firebase/Firestore";
@@ -15,7 +15,6 @@ function Dashboard() {
     const [editing, setEditing] = useState(false);
     const [entry, setEntry] = useState<LinkData>(Object);
     const [resolvedLinks, setResolvedLinks] = useLocalStorageState<LinkData[]>("resolve-links", {defaultValue: []});
-    const memoResolve = useCallback((linksArr: LinkData[]) => setResolvedLinks(linksArr), [setResolvedLinks])
 
     // Update UID once user logs in.
     useEffect(() => {
@@ -25,12 +24,13 @@ function Dashboard() {
 
     // Attach Firestore listener
     useEffect(() => {
+        if (loading) return;
         const q = query(collection(firestore, `/users/${user?.uid}/userLinks`), orderBy("url", "asc"))
         const unsub = onSnapshot(q, async (querySnapshot) => {
-            memoResolve(await resolveSnapshotLinks(user?.uid, querySnapshot));
+            setResolvedLinks(await resolveSnapshotLinks(user?.uid, querySnapshot));
         });
         return () => unsub();
-    }, [memoResolve, user?.uid])
+    }, [setResolvedLinks, user?.uid, loading])
 
     // This should never happen, but just in case.
     if (user?.uid === undefined) {
@@ -47,7 +47,7 @@ function Dashboard() {
                     </div>
                 </div>
                 <Table links={resolvedLinks} userid={user?.uid} setEditing={setEditing}
-                       entry={(entries: LinkData) => setEntry(entries)} editing={editing}/>
+                       entry={setEntry} editing={editing}/>
             </div>
         </div>
     )
