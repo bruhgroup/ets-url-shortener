@@ -14,7 +14,6 @@ export default function DataEntry({
     const [link, setLink] = useState<string>("");
     const [shortLink, setShortLink] = useState<string>(generateDistinct(5));
     const [description, setDescription] = useState<string>("");
-    const [success, setSuccess] = useState<boolean>(false)
     const [requireAuth, setRequiredAuth] = useState<boolean>(false);
     const [redirectTimer, setRedirectTimer] = useState<boolean>(true);
 
@@ -26,13 +25,6 @@ export default function DataEntry({
         setDescription(editEntry.desc);
     }, [editEntry, editState, setEditState])
 
-    useEffect(() => {
-        if (editState || Object.keys(editEntry).length === 0) return;
-        success ?
-            toast.success(`Short URL was ${editState ? "edited" : "created"}!`) :
-            toast.error("Short URL already exists!");
-    }, [editEntry, editState, success])
-
     return (
         <form
             className={"flex flex-col justify-center items-center px-[8px] py-[12px] gap-[12px] bg-c-gray-100 rounded"}
@@ -40,8 +32,14 @@ export default function DataEntry({
                 e.preventDefault();
                 if (link === "") return toast.error("You did not input an URL!");
                 editState ?
-                    setSuccess(await update(userid, link, shortLink, description, redirectTimer)) :
-                    setSuccess(await write(userid, link, shortLink, description, redirectTimer));
+                    update(userid, link, shortLink, description, redirectTimer)
+                        .then((success) => success ?
+                            toast.success(`Short URL was edited!`) :
+                            toast.error("Short URL could not be edited due to an error.")) :
+                    write(userid, link, shortLink, description, redirectTimer)
+                        .then((success) => success ?
+                            toast.success(`Short URL was created!`) :
+                            toast.error("Short URL already exists."));
                 setLink("");
                 setShortLink(generateDistinct(5));
                 setDescription("");
@@ -77,29 +75,32 @@ export default function DataEntry({
             </div>
             <div className={"bg-gray-300 h-[3px] rounded w-full"}/>
             <div className={"flex flex-col items-center gap-[5px] w-full"}>
-                <div className={"flex justify-center items-center gap-[10px] w-full"}>
+                <div className={"flex flex-col sm:flex-row justify-center items-center gap-[10px] w-full"}>
                     <input
-                        className={"flex-grow min-w-[20px] rounded p-2 border-2 border-c-gray-300"}
+                        className={"w-full sm:w-fit sm:flex-grow min-w-[20px] rounded p-2 border-2 border-c-gray-300"}
                         placeholder={"Add a description (no special characters)"}
                         pattern={"[a-zA-Z0-9 ]+"}
                         onChange={(e) => setDescription(e.target.value)}
                         value={description}
                         type={"text"}
                     />
-                    <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-black font-medium"}>
-                        <button className={"text-white"}
-                                type={"submit"}>{editState ? "Edit Short URL" : "Create Short URL"}</button>
+                    <div className={"flex flex-row gap-[10px] w-full sm:w-fit text-center"}>
+                        <div className={"w-full sm:w-fit max-h-[45px] rounded px-[16px] py-[8px] bg-black font-medium"}>
+                            <button className={"text-white"}
+                                    type={"submit"}>{editState ? "Edit Short URL" : "Create Short URL"}</button>
+                        </div>
+                        {editState && <div
+                            className={"w-full sm:w-fit max-h-[45px] rounded px-[16px] py-[8px] bg-red-500 font-medium"}>
+                            <button className={"text-white"} onClick={() => {
+                                setEditState(false)
+                                toast.info("Editing cancelled!")
+                            }}>Cancel
+                            </button>
+                        </div>}
                     </div>
-                    {editState && <div className={"max-h-[45px] rounded px-[16px] py-[8px] bg-red-500 font-medium"}>
-                        <button className={"text-white"} onClick={() => {
-                            setEditState(false)
-                            toast.info("Editing cancelled!")
-                        }}>Cancel
-                        </button>
-                    </div>}
                 </div>
 
-                <div className={"flex justify-evenly items-center gap-[10px] w-full"}>
+                <div className={"flex justify-evenly items-center gap-[10px] w-full flex-col sm:flex-row"}>
                     <Switch label={"Require Authentication"} state={requireAuth}
                             onChange={() => setRequiredAuth(!requireAuth)}/>
                     <Switch label={"Disable Redirect Timer"} state={!redirectTimer}
