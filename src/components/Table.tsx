@@ -9,6 +9,7 @@ import React, {useState, useMemo, useEffect} from "react";
 import {LinkData} from "../types";
 import MenuPopup from "./MenuPopup";
 import {toast} from "react-toastify";
+import QrCodePopup from "./QrCodePopup";
 
 const columnHelper = createColumnHelper<LinkData>()
 
@@ -49,7 +50,7 @@ export default function Table({links, userid, setEditing, entry}: { links: LinkD
                 header: "QR Code",
                 size: 98,
                 cell: props =>
-                    <button className={"max-w-[98px] w-[98px]"} onClick={() => {}}>OPEN</button>
+                    <QrCodePopup url={`${window.location.href}${props.row.getVisibleCells()[1].getValue()}`} id={`${props.row.getVisibleCells()[1].getValue()}`}/>
             }),
             columnHelper.display({
                 header: "URL",
